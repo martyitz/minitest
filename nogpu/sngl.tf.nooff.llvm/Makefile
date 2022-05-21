@@ -1,0 +1,42 @@
+SRCS	= ../../src/single.cc ../../src/nooffload.cc
+TARGET	= sngl.tf.nooffload.llvm.ng
+
+default all: $(TARGET)
+
+CXX = clang++
+OMPFLAGS = -g -O2 -fopenmp -lm
+
+$(TARGET): ${SRCS}
+	$(CXX) $(OMPFLAGS) -o $(TARGET) ${SRCS}
+
+run: $(TARGET)
+	@echo "Running \"$(TARGET)\""
+	@echo ""
+	/bin/time -p ./$(TARGET)
+	@echo ""
+	@echo ""
+
+hpct: hpct1 hpct2
+
+hpct1: $(TARGET)
+	runhpct $(TARGET) "-e CPUTIME -t" hpct1.c
+
+hpct2: $(TARGET)
+	runhpct $(TARGET) "-e cycles -t" hpct2.c
+
+collect: $(TARGET)
+	collect -p hi $(TARGET)
+	er_print -func test.1.er
+
+clean:
+	-/bin/rm -rf meas.*
+	-/bin/rm -rf dbase.*
+	-/bin/rm -f *core*
+	-/bin/rm -f *log.*
+	-/bin/rm -rf test.*.er
+	@echo ""
+	@echo ""
+
+clobber: clean
+	-/bin/rm -rf *.o $(TARGET)
+	@echo ""
