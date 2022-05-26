@@ -119,8 +119,13 @@ echo "" 2>&1 | tee -a log.minitest
 # Check for GPUs
 echo "======================== Checking for Nvidia GPUs ============================="  2>&1 | tee -a log.minitest
 if [ -x /usr/bin/nvidia-smi ]; then
-	nvidia-smi 2>&1 | grep NVIDIA | tee -a log.minitest
-	echo "CUDA_HOME = $CUDA_HOME" | tee -a log.minitest
+	hasnvidia=`nvidia-smi 2>&1 | grep "NVIDIA-SMI has failed" | wc -l`
+	if [ $hasnvidia -eq 1 ]; then
+	    echo "No NVIDIA GPU driver found" | tee -a log.minitest
+	else
+	    nvidia-smi 2>&1 | grep NVIDIA | tee -a log.minitest
+	    echo "CUDA_HOME = $CUDA_HOME" | tee -a log.minitest
+	fi
 else
 	echo "No NVIDIA GPUs found" | tee -a log.minitest
 fi
@@ -128,7 +133,7 @@ echo "" 2>&1 | tee -a log.minitest
 # echo "======================= End check for Nvidia GPUs ============================="  2>&1 | tee -a log.minitest
 
 echo "======================== Checking for AMD GPUs ================================"  2>&1 | tee -a log.minitest
-if [ -x /usr/bin/rocm-smi ]; then
+if [ -x `which rocm-smi` ]; then
 	rocm-smi -i --showdriverversion  2>&1 | grep -v "=============" | grep -v "^$" | tee -a log.minitest
 	echo -n "  AMD Firmware version: "  | tee -a log.minitest
 	cat /sys/class/kfd/kfd/topology/nodes/*/properties | grep ^fw_version  2>&1 | uniq | tee -a log.minitest
@@ -158,3 +163,4 @@ done
 echo " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"  2>&1 | tee -a log.minitest
 echo ""  2>&1 | tee -a log.minitest
 exit 0
+No NVIDIA GPUs found
