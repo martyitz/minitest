@@ -104,14 +104,14 @@ grep "symbol lookup error" log.$name
 
 # Make sure there was a measurements directory; if so count CPU/GPU threads
 if [ -d meas.$name ]; then
-	echo " " >> log.$name
+	echo " " | tee -a log.$name
 	THREADS=`ls meas.$name/*.hpcrun | wc -l`
 	CPUTHREADS=`ls meas.$name/*.hpcrun 2>/dev/null | grep -v "000000-5" | wc -l`
 	GPUTHREADS=`ls meas.$name/*-000000-5*.hpcrun 2>/dev/null | wc -l`
 	echo "  Experiment hpcrun files: $THREADS   CPU = $CPUTHREADS   GPU = $GPUTHREADS" | tee -a log.$name
 else
-	echo " " >> log.$name
 	echo "ERROR: measurements directory does not exist" | tee -a log.$name
+	echo " "  |tee -a log.$name
 	exit 0
 fi
 
