@@ -1,5 +1,4 @@
 #!/bin/sh
-
 #------------------------------------------------------------
 # minitest:
 #
@@ -40,7 +39,7 @@ EOF
 #------------------------------------------------------------
 
 if [ -a miniconfig ]; then
-	source miniconfig
+	source ./miniconfig
 else
 	echo "ERROR no miniconfig file is found"
 	echo "Please create a miniconfig file; be sure to set TOPDIR in it"
@@ -60,6 +59,8 @@ if [ "${RUNDIRS}" == "" ]; then
 	usage
 fi
 echo ""
+
+export PATH=$PATH:$TOPDIR/bin
 
 # echo "TOPDIR: "
 # echo -n "RUNDIRS: "
@@ -153,8 +154,8 @@ do
 	echo "" 2>&1 | tee -a log.minitest
 		echo "================================================================="  2>&1 | tee -a log.minitest
 	if [ "${go}" == "ll" ]; then
-		echo "cd'ing to ${sd} to run \"ls -alF\""  2>&1 | tee -a log.minitest
-		(cd ${TOPDIR}/${sd} ; ls -alF )  2>&1 | tee -a log.minitest
+		echo "cd'ing to ${sd} to run \"ls -lF\""  2>&1 | tee -a log.minitest
+		(cd ${TOPDIR}/${sd} ; ls -lF )  2>&1 | tee -a log.minitest
 	else
 		echo "cd'ing to ${sd} to run \"make $1\""  2>&1 | tee -a log.minitest
 		(cd ${TOPDIR}/${sd} ; make $1)  2>&1 | tee -a log.minitest

@@ -52,7 +52,7 @@ fi
 if [ "$1" == "" ]; then
 	usage
 else
-	targargs=$1
+	targargs=./$1
 
 fi
 
@@ -84,12 +84,12 @@ echo "  ROCM_PATH = $ROCM_PATH" >> log.$name
 echo "" >> log.$name
 
 if [ "$norun" == "yes" ]; then
-	echo "/bin/time -p hpcrun $targargs $runargs -o meas.$name >>log.$name 2>&1"
+	echo "/usr/bin/time -p hpcrun $targargs $runargs -o meas.$name >>log.$name 2>&1"
 	exit 0
 fi
-echo "Launching /bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1"
-echo "Launching /bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1" >>log.$name
-/bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1
+echo "Launching /usr/bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1"
+echo "Launching /usr/bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1" >>log.$name
+/usr/bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1
 grep avgtext log.$name
 echo " " >> log.$name
 
@@ -118,9 +118,9 @@ fi
 echo "" >> log.$name
 echo "=================================================================" >> log.$name
 echo "" >> log.$name
-# echo "Launching /bin/time -p hpcstruct $4 meas.$name  >>log.$name 2>&1"
-echo "Launching /bin/time -p hpcstruct $4 meas.$name  >>log.$name 2>&1" >> log.$name
-/bin/time -p hpcstruct $4 meas.$name  >>log.$name 2>&1
+# echo "Launching /usr/bin/time -p hpcstruct $4 meas.$name  >>log.$name 2>&1"
+echo "Launching /usr/bin/time -p hpcstruct $4 meas.$name  >>log.$name 2>&1" >> log.$name
+/usr/bin/time -p hpcstruct $4 meas.$name  >>log.$name 2>&1
 
 if [ -d meas.${name}/gpubins-used ]; then
 	GPUBINSUSED=`ls meas.${name}/gpubins-used | wc -l`
@@ -132,9 +132,9 @@ echo "  Experiment gpubins-used: $GPUBINSUSED" | tee -a log.$name
 echo "" >> log.$name
 echo "=================================================================" >> log.$name
 echo "" >> log.$name
-# echo "Launching /bin/time -p hpcprof -o dbase.$name meas.$name  >>log.$name 2>&1"
-echo "Launching /bin/time -p hpcprof -o dbase.$name meas.$name  >>log.$name 2>&1" >>log.$name
-/bin/time -p hpcprof -o dbase.$name meas.$name  >>log.$name 2>&1
+# echo "Launching /usr/bin/time -p hpcprof -o dbase.$name meas.$name  >>log.$name 2>&1"
+echo "Launching /usr/bin/time -p hpcprof -o dbase.$name meas.$name  >>log.$name 2>&1" >>log.$name
+/usr/bin/time -p hpcprof -o dbase.$name meas.$name  >>log.$name 2>&1
 echo ""
 grep ERROR log.$name
 echo ""
