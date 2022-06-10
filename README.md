@@ -17,11 +17,11 @@ This testsuite is a mix-and-match set of components for
 The sources for each of the components is in /src 
 
 The tests themselves are in three top-level directories -- amdgpu, nvidiagpu, and nogpu.
-Under each of them is a set of subdirectories named by <frontend>.<compute>.<offload>.<compiler>
-(The <compute>’s are all “mf” for now). Those directories contain nothing other than a Makefile.
+Under each of them is a set of subdirectories named by `<frontend>.<compute>.<offload>.<compiler>`
+(The `<compute>`'s are all transcendental functions for now). Those directories contain nothing other than a Makefile.
 Each Makefile generates one executable, named similarly to the directory, with the type of GPU appended.
 
-Each Makefile also has a target “hpct”, which lists subtargets each of which generates one experiment.
+Each Makefile also has a target `hpct`, which lists subtargets each of which generates one experiment.
 The subtargets each invoke runhpct, which generates a measurement directory, and database,
 and a log file. Subtargets are for varying number of threads, GPU profiling with or without PC sampling,
 -e cycles, or any other data collection that seems worth testing. Some of them also have targets for
