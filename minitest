@@ -20,9 +20,9 @@ definitions:
     RUNDIRS, a list of the subdirectories to be processed.
 
     Both of these are obtained by sourcing a file named
-    file named "miniconfig" in the same directory as this.
+    "miniconfig" in the same directory as this script.
 
-    An "example.miniconfig" file is in the .../bin subdirectory, and should
+    An "example.miniconfig" file is in this directory, and should
     be used as a template for customizing the test run.
 
 Usage:
