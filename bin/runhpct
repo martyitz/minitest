@@ -97,6 +97,7 @@ echo " " >> log.$name
 grep ERROR log.$name
 grep "Memory Error" log.$name
 grep "No valid target devices" log.$name
+grep "device offloading is now disabled" log.$name
 grep "Command terminated" log.$name
 grep "HPCToolkit fatal error" log.$name
 grep "Command exited with non-zero status" log.$name
