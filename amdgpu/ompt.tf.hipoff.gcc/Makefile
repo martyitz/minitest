@@ -4,7 +4,7 @@ TARGET	= ompt.tf.hip.gcc.amd
 default all: $(TARGET)
 
 CXX = g++
-CXXFLAGS = -g -O2 -lm
+CXXFLAGS = -g -O2 -lm -fopenmp
 
 HIP=$(HIP_PATH)
 HIPCXX = $(HIP)/bin/hipcc

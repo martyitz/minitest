@@ -138,6 +138,7 @@ if [ -x `which rocm-smi` ]; then
 	rocm-smi -i --showdriverversion  2>&1 | grep -v "=============" | grep -v "^$" | tee -a log.minitest
 	echo -n "  AMD Firmware version: "  | tee -a log.minitest
 	cat /sys/class/kfd/kfd/topology/nodes/*/properties | grep ^fw_version  2>&1 | uniq | tee -a log.minitest
+	rocminfo | grep "gfx" | tee -a log.minitest
 	echo "ROCM_PATH = $ROCM_PATH" | tee -a log.minitest
 else
 	echo "No AMD GPUs found" | tee -a log.minitest
