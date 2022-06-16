@@ -5,6 +5,7 @@ default all: $(TARGET)
 
 MARCH = -march=gfx90a
 MARCH = -march=gfx906
+MARCH = -march=gfx908
 
 CXX = amdclang++
 OMPFLAGS = -g -O2 -fopenmp -lm -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa $(MARCH)
