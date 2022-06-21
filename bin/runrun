@@ -1,0 +1,83 @@
+#!/bin/sh
+
+#------------------------------------------------------------
+# runhpct:
+#
+#  a script that will invoke hpcrun to collect a measurements
+#  directory, process it with hpcstruct, and then process
+#  it with hpcprof to produce a database directory.
+#------------------------------------------------------------
+
+#------------------------------------------------------------
+# usage message
+#------------------------------------------------------------
+
+usage()
+{
+	    cat <<EOF 1>&2
+
+Usage:
+  runrun <"target-app args"> <name>
+
+  Arg 1: the target application name, and any arguments it needs
+    If the target-app needs arguments Arg 1 should be a quoted string
+
+  Arg2: A string to be used in constructing log file names:
+    log.<name>
+
+EOF
+    exit 1
+}
+
+
+#------------------------------------------------------------
+# the script
+#------------------------------------------------------------
+
+# $1 the target and its arguments
+if [ "$1" == "" ]; then
+	usage
+else
+	targargs=./$1
+
+fi
+
+# $2 the name to be used for directories and files
+if [ "$2" == "" ]; then
+	usage
+else
+	name=$2
+fi
+
+#------------------------------------------------------------
+# Now the actual commands
+#------------------------------------------------------------
+
+pwd > log.$name
+date >> log.$name
+hpcrun -V >> log.$name 2>&1
+echo "  CUDA_HOME = $CUDA_HOME" >> log.$name
+echo "  ROCM_PATH = $ROCM_PATH" >> log.$name
+echo "" >> log.$name
+
+echo "Launching /usr/bin/time $targargs >>log.$name 2>&1"
+echo "Launching /usr/bin/time $targargs >>log.$name 2>&1" >>log.$name
+/usr/bin/time $targargs >>log.$name 2>&1
+grep avgtext log.$name
+echo " " >> log.$name
+
+# now look for various possible run time errors in the log file produced
+grep ERROR log.$name
+grep "Memory Error" log.$name
+grep "No valid target devices" log.$name
+grep "device offloading is now disabled" log.$name
+grep "Command terminated" log.$name
+grep "HPCToolkit fatal error" log.$name
+grep "Command exited with non-zero status" log.$name
+grep "symbol lookup error" log.$name
+
+echo "" >> log.$name
+echo "=================================================================" >> log.$name
+echo "" >> log.$name
+ls -lF >> log.$name
+echo " " | tee -a log.$name

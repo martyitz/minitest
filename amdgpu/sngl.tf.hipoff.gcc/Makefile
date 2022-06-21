@@ -21,12 +21,7 @@ hipgpu.o: ../../src/hipgpu.cu
 $(TARGET): single.o hipgpu.o
 	$(HIPCXX) -fopenmp single.o hipgpu.o -o $(TARGET) ${LDFLAGS}
 
-run: $(TARGET)
-	@echo "Running \"$(TARGET)\""
-	@echo ""
-	/bin/time -p ./$(TARGET)
-	@echo ""
-	@echo ""
+run: run1
 
 hpct: hpct1
 

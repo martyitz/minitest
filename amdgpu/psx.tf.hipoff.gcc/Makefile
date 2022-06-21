@@ -22,12 +22,16 @@ hipgpu.o: ../../src/hipgpu.cu
 $(TARGET): psxthreads.o hipgpu.o
 	$(HIPCXX)  -DGPU_SMALL psxthreads.o hipgpu.o -o $(TARGET) ${LDFLAGS} ${MARCH}
 
-run: $(TARGET)
-	@echo "Running \"$(TARGET)\""
-	@echo ""
-	/bin/time -p ./$(TARGET)
-	@echo ""
-	@echo ""
+run: run1 run2 run3
+
+run1: $(TARGET)
+	export OMP_NUM_THREADS=1; runrun $(TARGET) run1
+
+run2: $(TARGET)
+	export OMP_NUM_THREADS=2; runrun $(TARGET) run2
+
+run3: $(TARGET)
+	export OMP_NUM_THREADS=3; runrun $(TARGET) run3
 
 hpct: hpct1 hpct2 hpct3
 

@@ -9,20 +9,18 @@ OMPFLAGS = -g -O2 -fopenmp -lm -foffload="-O2 -lm -misa=sm_35"
 $(TARGET): ${SRCS}
 	$(CXX) $(OMPFLAGS) -o $(TARGET) ${SRCS}
 
-run: $(TARGET)
-	@echo "Running \"$(TARGET)\""
-	@echo ""
-	/bin/time -p ./$(TARGET)
-	@echo ""
-	@echo ""
+run: run1
 
-hpct: hpct1 hpct2
+run1: $(TARGET)
+	runrun $(TARGET) run1
+
+hpct: hpct1 hpctpc1
 
 hpct1: $(TARGET)
-	export OMP_NUMTHREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct1.c
+	runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct1.c
 
-hpct2: $(TARGET)
-	export OMP_NUMTHREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct2.c
+hpctpc1: $(TARGET)
+	runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpctpc1.c
 
 collect: $(TARGET)
 	collect -p hi $(TARGET)

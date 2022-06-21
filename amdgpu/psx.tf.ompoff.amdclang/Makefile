@@ -13,12 +13,16 @@ OMPFLAGS = -g -O2 -fopenmp -lm -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-targe
 $(TARGET): ${SRCS}
 	$(CXX) -DGPU_SMALL -DIGNORE_BAD_INITIAL_DEVICE $(OMPFLAGS) -o $(TARGET) ${SRCS}
 
-run: $(TARGET)
-	@echo "Running \"$(TARGET)\""
-	@echo ""
-	/bin/time -p ./$(TARGET)
-	@echo ""
-	@echo ""
+run: run1 run2 run3
+
+run1: $(TARGET)
+	export OMP_NUM_THREADS=1; runrun $(TARGET) run1
+
+run2: $(TARGET)
+	export OMP_NUM_THREADS=2; runrun $(TARGET) run2
+
+run3: $(TARGET)
+	export OMP_NUM_THREADS=3; runrun $(TARGET) run3
 
 hpct: hpct1 hpct2 hpct3
 

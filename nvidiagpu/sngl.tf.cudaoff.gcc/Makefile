@@ -23,20 +23,18 @@ cudagpu.o: ../../src/cudagpu.cu
 $(TARGET): single.o cudagpu.o
 	$(CXX) -fopenmp single.o cudagpu.o -o $(TARGET) ${LDFLAGS}
 
-run: $(TARGET)
-	@echo "Running \"$(TARGET)\""
-	@echo ""
-	/bin/time -p ./$(TARGET)
-	@echo ""
-	@echo ""
+run: run1
 
-hpct: hpct1 hpct2
+run1: $(TARGET)
+	runrun $(TARGET) run1
+
+hpct: hpct1 hpctpc1
 
 hpct1: $(TARGET)
 	runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct1.cg
 
-hpct2: $(TARGET)
-	runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct2.cgp
+hpctpc1: $(TARGET)
+	runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpctpc1.cgp
 
 clean:
 	-/bin/rm -rf meas.*
