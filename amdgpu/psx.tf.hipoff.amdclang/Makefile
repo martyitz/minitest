@@ -22,7 +22,7 @@ hipgpu.o: ../../src/hipgpu.cu
 $(TARGET): psxthreads.o hipgpu.o
 	$(HIPCXX)  -DGPU_SMALL psxthreads.o hipgpu.o -o $(TARGET) ${LDFLAGS} ${MARCH}
 
-run: run1 run2 run3
+run: run1 run2 run3 run8
 
 run1: $(TARGET)
 	export OMP_NUM_THREADS=1; runrun $(TARGET) run1
@@ -33,7 +33,10 @@ run2: $(TARGET)
 run3: $(TARGET)
 	export OMP_NUM_THREADS=3; runrun $(TARGET) run3
 
-run: $(TARGET)
+run8: $(TARGET)
+	export OMP_NUM_THREADS=8; runrun $(TARGET) run8
+
+hpct: hpct1 hpct2 hpct3 hpct8
 
 hpct1: $(TARGET)
 	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct1.cg
@@ -43,6 +46,9 @@ hpct2: $(TARGET)
 
 hpct3: $(TARGET)
 	export OMP_NUM_THREADS=3; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct3.cg
+
+hpct8: $(TARGET)
+	export OMP_NUM_THREADS=8; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct8.cg
 
 clean:
 	-/bin/rm -rf meas.*

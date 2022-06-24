@@ -23,7 +23,7 @@ cudagpu.o: ../../src/cudagpu.cu
 $(TARGET): psxthreads.o cudagpu.o
 	$(CXX) psxthreads.o cudagpu.o -o $(TARGET) ${LDFLAGS}
 
-run: run1 run2 run3
+run: run1 run2 run3 run8
 
 run1: $(TARGET)
 	export OMP_NUM_THREADS=1; runrun $(TARGET) run1
@@ -34,7 +34,10 @@ run2: $(TARGET)
 run3: $(TARGET)
 	export OMP_NUM_THREADS=3; runrun $(TARGET) run3
 
-hpct: hpct1 hpct2 hpct3 hpctpc1 hpctpc2
+run8: $(TARGET)
+	export OMP_NUM_THREADS=8; runrun $(TARGET) run8
+
+hpct: hpct1 hpct2 hpct3 hpct8 hpctpc1 hpctpc2 hpctpc8
 
 hpct1: $(TARGET)
 	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct1.cg
@@ -45,11 +48,17 @@ hpct2: $(TARGET)
 hpct3: $(TARGET)
 	export OMP_NUM_THREADS=3; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct3.cg
 
+hpct8: $(TARGET)
+	export OMP_NUM_THREADS=8; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct8.cg
+
 hpctpc1: $(TARGET)
 	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct1.cgp "--gpucfg yes"
 
 hpctpc2: $(TARGET)
 	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct2.cgp "--gpucfg yes"
+
+hpctpc8: $(TARGET)
+	export OMP_NUM_THREADS=8; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct8.cgp "--gpucfg yes"
 
 clean:
 	-/bin/rm -rf meas.*
