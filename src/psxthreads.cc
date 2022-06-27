@@ -62,8 +62,8 @@ main(int argc, char *argv[], char **envp)
 #endif
 
   // allocate the tid array and a thread number array
-  tid = new pthread_t (nthreads);
-  tnum = new pid_t (nthreads);
+  tid = (pthread_t *) malloc( nthreads * sizeof (pthread_t) );
+  tnum = (pid_t *) malloc( nthreads * sizeof(pid_t) );
 
   /* create nthreads threads, having each start at do_work */
   for (int i = 0; i < nthreads; i++) {

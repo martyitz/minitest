@@ -35,58 +35,70 @@ twork( int iter, int threadnum)
 
   err = cudaMalloc((void **)&d_l1, size);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to allocate device vector d_l1 (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to allocate device vector d_l1 (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Allocated device vector d_l1\n" );
+    fprintf(stderr, "    T %d, I %d, Alloc device vector d_l1 (%p)\n",
+      threadnum, iter, d_l1 );
 #endif
   }
   err = cudaMalloc((void **)&d_r1, size);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to allocate device vector d_r1 (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to allocate device vector d_r1 (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Allocated device vector d_r1\n" );
+    fprintf(stderr, "    T %d, I %d, Alloc device vector d_r1 (%p)\n",
+      threadnum, iter, d_r1 );
 #endif
   }
   err = cudaMalloc((void **)&d_p1, size);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to allocate device vector d_p1 (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to allocate device vector d_p1 (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Allocated device vector d_p1\n" );
+    fprintf(stderr, "    T %d, I %d, Alloc device vector d_p1 (%p)\n",
+      threadnum, iter, d_p1 );
 #endif
   }
 
   // Copy l1,r1 and p1 to the device
   err = cudaMemcpy(d_l1, l1, size, cudaMemcpyHostToDevice);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to copy device l1 to d_l1 (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to copy device l1 to d_l1 (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Copied l1 to device vector d_l1\n" );
+    fprintf(stderr, "    T %d, I %d, Copied l1 to device vector d_l1\n",
+      threadnum, iter );
 #endif
   }
   err = cudaMemcpy(d_r1, r1, size, cudaMemcpyHostToDevice);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to copy device r1 to d_r1 (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to copy device r1 to d_r1 (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Copied r1 to device vector d_r1\n" );
+    fprintf(stderr, "    T %d, I %d, Copied r1 to device vector d_r1\n",
+      threadnum, iter );
 #endif
   }
   err = cudaMemcpy(d_p1, p1, size, cudaMemcpyHostToDevice);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to copy device p1 to d_p1 (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to copy device p1 to d_p1 (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Copied p1 to device vector d_p1\n" );
+    fprintf(stderr, "    T %d, I %d, Copied p1 to device vector d_p1\n",
+      threadnum, iter );
 #endif
   }
 
@@ -99,54 +111,64 @@ twork( int iter, int threadnum)
   xcompute<<<blocksPerGrid, threadsPerBlock>>>(d_l1, d_r1, d_p1, nn);
   err = cudaGetLastError();
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to launch compute kernel (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to launch compute kernel (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Ran GPU kernel for xcompute\n" );
+    fprintf(stderr, "    T %d, I %d, Ran GPU kernel for xcompute\n",
+      threadnum, iter );
 #endif
   }
 
   // Copy p1 back to the host
   err = cudaMemcpy(p1, d_p1, size, cudaMemcpyDeviceToHost);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to copy p1 from device (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to copy p1 from device (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Copied d_p1 back to host\n" );
+    fprintf(stderr, "    T %d, I %d, Copied d_p1 back to host\n",
+      threadnum, iter );
 #endif
   }
 
   // Free the device memory
   err = cudaFree(d_l1);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to free d_l1 from device (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to free d_l1 from device (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Freed device vector d_l1\n" );
+    fprintf(stderr, "    T %d, I %d, Freed device vector d_l1 (%p)\n",
+      threadnum, iter, d_l1 );
 #endif
   }
   err = cudaFree(d_r1);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to free d_r1 from device (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to free d_r1 from device (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Freed device vector d_r1\n" );
+    fprintf(stderr, "    T %d, I %d, Freed device vector d_r1 (%p)\n",
+      threadnum, iter, d_r1 );
 #endif
   }
   err = cudaFree(d_p1);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to free d_p1 from device (error code %s)!\n", cudaGetErrorString(err));
+    fprintf(stderr, "    T %d, I %d, Failed to free d_p1 from device (error code %s)!\n",
+      threadnum, iter, cudaGetErrorString(err));
     exit(-1);
 #if 0
   } else {
-    fprintf(stderr, "Freed device vector d_p1\n" );
+    fprintf(stderr, "    T %d, I %d, Freed device vector d_p1 (%p)\n",
+      threadnum, iter, d_p1 );
 #endif
   }
-#if 0
+#if 1
   fprintf(stderr, "\nCompleted iteration %d, thread %d\n\n", iter, threadnum);
 #endif
   spacer (50, true);
