@@ -20,25 +20,12 @@ hipgpu.o: ../../src/hipgpu.cu
 
 $(TARGET): single.o hipgpu.o
 	$(HIPCXX) -fopenmp single.o hipgpu.o -o $(TARGET) ${LDFLAGS}
+	@echo ""
+	@echo ""
 
 run: run1
 
 hpct: hpct1
 
-hpct1: $(TARGET)
-	runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct1.cg
-
-clean:
-	-/bin/rm -rf meas.*
-	-/bin/rm -rf dbase.*
-	-/bin/rm -f *core*
-	-/bin/rm -f *log.*
-	-/bin/rm -rf test.*.er
-	@echo ""
-	@echo ""
-
-clobber: clean
-	-/bin/rm -rf *.o $(TARGET)
-	@echo ""
-	@echo ""
-
+include ../../maketargets/generic.targets
+include ../../maketargets/amd.targets

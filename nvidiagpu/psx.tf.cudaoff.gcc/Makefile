@@ -5,8 +5,6 @@ default all: $(TARGET)
 
 CUDA = $(CUDA_HOME)
 CUDACXX = ${CUDA}/bin/nvcc
-CUDACXXFLAGS = -g -O2 -DHAVE_CUDA -std=c++11 -I${CUDA}/include/ $(OPTFLAGS) -Xptxas -v -gencode=arch=compute_60,code=\"sm_60,compute_60\"
-CUDACXXFLAGS = -g -lineinfo -opt-info inline -O2 -std=c++11 -I${CUDA}/include/ -Xptxas -v -gencode=arch=compute_60,code=\"sm_60,compute_60\"
 CUDACXXFLAGS = -g -lineinfo -O2 -std=c++11 -I${CUDA}/include/
 
 CXX = g++
@@ -22,55 +20,14 @@ cudagpu.o: ../../src/cudagpu.cu
 
 $(TARGET): psxthreads.o cudagpu.o
 	$(CXX) psxthreads.o cudagpu.o -o $(TARGET) ${LDFLAGS}
-
-run: run1 run2 run3 run8
-
-run1: $(TARGET)
-	export OMP_NUM_THREADS=1; runrun $(TARGET) run1
-
-run2: $(TARGET)
-	export OMP_NUM_THREADS=2; runrun $(TARGET) run2
-
-run3: $(TARGET)
-	export OMP_NUM_THREADS=3; runrun $(TARGET) run3
-
-run8: $(TARGET)
-	export OMP_NUM_THREADS=8; runrun $(TARGET) run8
-
-hpct: hpct1 hpct2 hpct3 hpct8 hpctpc1 hpctpc2 hpctpc8
-
-hpct1: $(TARGET)
-	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct1.cg
-
-hpct2: $(TARGET)
-	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct2.cg
-
-hpct3: $(TARGET)
-	export OMP_NUM_THREADS=3; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct3.cg
-
-hpct8: $(TARGET)
-	export OMP_NUM_THREADS=8; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct8.cg
-
-hpctpc1: $(TARGET)
-	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct1.cgp "--gpucfg yes"
-
-hpctpc2: $(TARGET)
-	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct2.cgp "--gpucfg yes"
-
-hpctpc8: $(TARGET)
-	export OMP_NUM_THREADS=8; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct8.cgp "--gpucfg yes"
-
-clean:
-	-/bin/rm -rf meas.*
-	-/bin/rm -rf dbase.*
-	-/bin/rm -f *core*
-	-/bin/rm -f *log.*
-	-/bin/rm -rf test.*.er
 	@echo ""
 	@echo ""
 
-clobber: clean
-	-/bin/rm -rf *.o $(TARGET)
-	@echo ""
-	@echo ""
+run: run1 run2 run3 run8 run16 run32 run48 run64 run128 run256
+
+hpct: hpct1 hpct2 hpct3 hpct8 hpct16 hpct32 hpct48 hpct64 hpct128 hpct256 hpctpc1 hpctpc2 hpctpc8
+
+include ../../maketargets/generic.targets
+include ../../maketargets/nvidia.targets
+
 

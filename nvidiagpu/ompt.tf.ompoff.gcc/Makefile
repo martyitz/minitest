@@ -8,48 +8,12 @@ OMPFLAGS = -g -O2 -fopenmp -lm -foffload="-O2 -lm -misa=sm_35"
 
 $(TARGET): ${SRCS}
 	$(CXX) $(OMPFLAGS) -o $(TARGET) ${SRCS}
-
-run: run1 run2 run3
-
-run1: $(TARGET)
-	export OMP_NUM_THREADS=1; runrun $(TARGET) run1
-
-run2: $(TARGET)
-	export OMP_NUM_THREADS=2; runrun $(TARGET) run2
-
-run3: $(TARGET)
-	export OMP_NUM_THREADS=3; runrun $(TARGET) run3
-
-hpct: hpct1 hpct2 hpct3 hpctpc1 hpctpc2
-
-hpct1: $(TARGET)
-	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct1.cg
-
-hpct2: $(TARGET)
-	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct2.cg
-
-hpct3: $(TARGET)
-	export OMP_NUM_THREADS=3; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct3.cg
-
-hpctpc1: $(TARGET)
-	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct1.cgp
-
-hpctpc2: $(TARGET)
-	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct2.cgp
-
-collect: $(TARGET)
-	collect -p hi $(TARGET)
-	er_print -func test.1.er
-
-clean:
-	-/bin/rm -rf meas.*
-	-/bin/rm -rf dbase.*
-	-/bin/rm -f *core*
-	-/bin/rm -f *log.*
-	-/bin/rm -rf test.*.er
 	@echo ""
 	@echo ""
 
-clobber: clean
-	-/bin/rm -rf *.o $(TARGET)
-	@echo ""
+run: run1 run2 run3 run8 run16 run32 run48 run64 run128 run256
+
+hpct: hpct1 hpct2 hpct3 hpct3 hpct8 hpct16 hpct32 hpct48 hpct64 hpct128 hpct256 hpctpc1 hpctpc2
+
+include ../../maketargets/generic.targets
+include ../../maketargets/nvidia.targets

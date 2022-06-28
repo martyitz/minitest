@@ -30,6 +30,15 @@ main(int argc, char *argv[], char **envp)
 
   /* determine thread count */
   omp_num_t = omp_get_max_threads();
+
+  /* Scale the size of the arrays, based on number of threads */
+  if (omp_num_t >= 16) {
+    nn = nn/8;
+  }
+  if (omp_num_t >= 128) {
+    nn = nn/8;
+  }
+
   fprintf(stderr, "This run of minitest will use %d CPU thread%s with data array size = %ld\n",
     omp_num_t, (omp_num_t==1 ? "" : "s"), nn );
 

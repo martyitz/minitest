@@ -21,40 +21,12 @@ hipgpu.o: ../../src/hipgpu.cu
 
 $(TARGET): ompthreads.o hipgpu.o
 	$(HIPCXX) -DGPU_SMALL -fopenmp ompthreads.o hipgpu.o -o $(TARGET) ${LDFLAGS}
-
-run: run1 run2 run3
-
-run1: $(TARGET)
-	export OMP_NUM_THREADS=1; runrun $(TARGET) run1
-
-run2: $(TARGET)
-	export OMP_NUM_THREADS=2; runrun $(TARGET) run2
-
-run3: $(TARGET)
-	export OMP_NUM_THREADS=3; runrun $(TARGET) run3
-
-hpct: hpct1 hpct2 hpct3
-
-hpct1: $(TARGET)
-	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct1.cg
-
-hpct2: $(TARGET)
-	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct2.cg
-
-hpct3: $(TARGET)
-	export OMP_NUM_THREADS=3; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct3.cg
-
-clean:
-	-/bin/rm -rf meas.*
-	-/bin/rm -rf dbase.*
-	-/bin/rm -f *core*
-	-/bin/rm -f *log.*
-	-/bin/rm -rf test.*.er
 	@echo ""
 	@echo ""
 
-clobber: clean
-	-/bin/rm -rf *.o $(TARGET)
-	@echo ""
-	@echo ""
+run: run1 run2 run3 run8 run16 run32 run48 run64 run128 run256
 
+hpct: hpct1 hpct2 hpct3 hpct8 hpct16 hpct32 hpct48 hpct64 hpct128 hpct256
+
+include ../../maketargets/generic.targets
+include ../../maketargets/amd.targets

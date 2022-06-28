@@ -13,14 +13,14 @@ pthread_t *tid;
 pid_t	*tnum;
 
 /* Parameters governing the size of the test */
-#define        N 40000000      /* size of the data arrays used */
+#define        ARRAY_SIZE 40000000      /* size of the data arrays used */
 #define        NITER 3         /* number of iterations performed by each thread */
 
 void *do_work(void *);
 void output(int threadnum, double *p, size_t size, const char *label, bool check);
 void init(double *p, size_t size);
 
-size_t nn = N;
+size_t nn = ARRAY_SIZE;
 int niter = NITER;
 int nthreads;
 
@@ -36,13 +36,21 @@ main(int argc, char *argv[], char **envp)
   char *s = getenv("OMP_NUM_THREADS");
   if (s != NULL) {
     nthreads = atoi(s);
-    if ( (nthreads < 1) || (nthreads > 32) ) {
-      fprintf(stderr, "OMP_NUM_THREADS (%d) out of range; < 1 or > 32 setting to 2 \n", nthreads );
+    if ( (nthreads < 1) || (nthreads > 256) ) {
+      fprintf(stderr, "OMP_NUM_THREADS (%d) out of range; < 1 or > 256 setting to 2 \n", nthreads );
       nthreads = 2;
     }
   } else {
     fprintf(stderr, "OMP_NUM_THREADS  was not set; setting to 2\n" );
       nthreads = 2;
+  }
+
+  /* scale the array sizes based on thread count */
+  if (nthreads >= 16) {
+    nn = nn/8;
+  }
+  if (nthreads >= 128) {
+    nn = nn/8;
   }
 
   fprintf(stderr, "\nThis run of minitest will use %d CPU thread%s with data array size = %ld\n",
@@ -70,28 +78,29 @@ main(int argc, char *argv[], char **envp)
     int retval;
     tnum[i] = i; 
 
-#if 0
 #ifdef BOUND
     retval = pthread_create(&(tid[i]), &attr, &do_work, (void *) &tnum[i]);
 #else
-#endif
-#endif
     retval = pthread_create(&(tid[i]), 0, &do_work, (void *) &tnum[i]);
-#if 0
 #endif
+
     if(retval != 0) {
       perror("ERROR:, pthread_create failed");
       exit(1);
     }
+
+#if 0
     fprintf(stderr, "  created thread %d (tnum = %d)\n", i, tnum[i] );
+#endif
   }
 
-  // fprintf(stderr, "All threads created; waiting for them to exit\n");
+  fprintf(stderr, "All threads created; waiting for them to exit\n");
 
   /* wait for all threads to complete their work and join */
   for (int i = 0; i < nthreads; i++) {
     pthread_join(tid[i], 0);
   }
+  fprintf(stderr, "All threads have exited\n");
 }
 
 
@@ -107,14 +116,18 @@ do_work(void *tnum)
       /* invoke the GPU-specific offloaded computation */
       twork(k, thread_num );
 
+#if 0
     fprintf(stderr, " thread %d -- end iteration %d\n", thread_num, k);
+#endif
   }
 
   /* write out various elements of this thread's result array */
   output(thread_num, pptr[thread_num], nn, "result p array" );
   checkdata(thread_num, pptr[thread_num], nn );
 
+#if 0
   fprintf(stderr, " worker thread %d exiting\n", thread_num);
+#endif
   pthread_exit(NULL);
 }
 

@@ -100,6 +100,12 @@ grep "No valid target devices" log.$name
 grep "device offloading is now disabled" log.$name
 grep "Command terminated" log.$name
 grep "HPCToolkit fatal error" log.$name
+grep "Failed to allocate device vector" log.$name
+grep "Failed to copy" log.$name
+grep "Failed to free" log.$name
+grep "Failed to launch compute kernel" log.$name
+grep "libgomp: cuMemAlloc error: out of memory" log.$name
+grep "libgomp: device memory allocation fail" log.$name
 grep "Command exited with non-zero status" log.$name
 grep "symbol lookup error" log.$name
 

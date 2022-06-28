@@ -21,28 +21,12 @@ hipgpu.o: ../../src/hipgpu.cu
 
 $(TARGET): single.o hipgpu.o
 	$(HIPCXX)  -DGPU_SMALL single.o hipgpu.o -o $(TARGET) ${LDFLAGS} ${MARCH}
-
-run: run1
-
-run1: $(TARGET)
-	runrun $(TARGET) run1
-
-hpct: hpct1
-
-hpct1: $(TARGET)
-	runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct1.cg
-
-clean:
-	-/bin/rm -rf meas.*
-	-/bin/rm -rf dbase.*
-	-/bin/rm -f *core*
-	-/bin/rm -f *log.*
-	-/bin/rm -rf test.*.er
 	@echo ""
 	@echo ""
 
-clobber: clean
-	-/bin/rm -rf *.o $(TARGET)
-	@echo ""
-	@echo ""
+run: run1 run2 run3 run8 run16 run32 run48 run64 run128 run256
 
+hpct: hpct1 hpct2 hpct3 hpct8 hpct16 hpct32 hpct48 hpct64 hpct128 hpct256
+
+include ../../maketargets/generic.targets
+include ../../maketargets/amd.targets

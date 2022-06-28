@@ -106,7 +106,10 @@ twork( int iter, int threadnum)
   int threadsPerBlock = 256;
   int blocksPerGrid = ( nn + threadsPerBlock -1 ) / threadsPerBlock;
 
-  fprintf(stderr, "  threadsPerBlock =  %d;  blocksPerGrid = %d\n", threadsPerBlock, blocksPerGrid );
+#if 1
+  fprintf(stderr, "  t %d, i%d, threadsPerBlock =  %d;  blocksPerGrid = %d\n",
+    threadnum, iter, threadsPerBlock, blocksPerGrid );
+#endif
 
   xcompute<<<blocksPerGrid, threadsPerBlock>>>(d_l1, d_r1, d_p1, nn);
   err = cudaGetLastError();

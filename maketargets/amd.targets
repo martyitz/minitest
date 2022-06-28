@@ -1,0 +1,31 @@
+# AMD GPU experiments without PC sampling with varying numbers of threads
+
+hpct1: $(TARGET)
+	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct1.cg
+
+hpct2: $(TARGET)
+	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct2.cg
+
+hpct3: $(TARGET)
+	export OMP_NUM_THREADS=3; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct3.cg
+
+hpct8: $(TARGET)
+	export OMP_NUM_THREADS=8; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct8.cg
+
+hpct16: $(TARGET)
+	export OMP_NUM_THREADS=16; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct16.cg
+
+hpct32: $(TARGET)
+	export OMP_NUM_THREADS=32; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct32.cg
+
+hpct48: $(TARGET)
+	export OMP_NUM_THREADS=48; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct48.cg
+
+hpct64: $(TARGET)
+	export OMP_NUM_THREADS=64; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct64.cg
+
+hpct128: $(TARGET)
+	export OMP_NUM_THREADS=128; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct128.cg
+
+hpct256: $(TARGET)
+	export OMP_NUM_THREADS=256; runhpct $(TARGET) "-e CPUTIME -e gpu=amd -t" hpct256.cg

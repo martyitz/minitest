@@ -1,0 +1,47 @@
+#  Run the target code with varying numbers of threads
+
+run1: $(TARGET)
+	export OMP_NUM_THREADS=1; runrun $(TARGET) run1
+
+run2: $(TARGET)
+	export OMP_NUM_THREADS=2; runrun $(TARGET) run2
+
+run3: $(TARGET)
+	export OMP_NUM_THREADS=3; runrun $(TARGET) run3
+
+run8: $(TARGET)
+	export OMP_NUM_THREADS=8; runrun $(TARGET) run8
+
+run16: $(TARGET)
+	export OMP_NUM_THREADS=16; runrun $(TARGET) run16
+
+run32: $(TARGET)
+	export OMP_NUM_THREADS=32; runrun $(TARGET) run32
+
+run48: $(TARGET)
+	export OMP_NUM_THREADS=48; runrun $(TARGET) run48
+
+run64: $(TARGET)
+	export OMP_NUM_THREADS=64; runrun $(TARGET) run64
+
+run128: $(TARGET)
+	export OMP_NUM_THREADS=128; runrun $(TARGET) run128
+
+run256: $(TARGET)
+	export OMP_NUM_THREADS=256; runrun $(TARGET) run256
+
+#  Generic targets for cleaning up the directory
+clean:
+	-/bin/rm -rf meas.*
+	-/bin/rm -rf dbase.* 
+	-/bin/rm -f *core*
+	-/bin/rm -f *log.*
+	@echo ""
+	@echo ""
+
+clobber: clean
+	-/bin/rm -rf *.o $(TARGET)
+	@echo ""
+	@echo ""
+
+

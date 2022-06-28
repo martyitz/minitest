@@ -1,0 +1,64 @@
+# Nvidia experiments without PC sampling with varying numbers of threads
+
+hpct1: $(TARGET)
+	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct1.cg
+
+hpct2: $(TARGET)
+	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct2.cg
+
+hpct3: $(TARGET)
+	export OMP_NUM_THREADS=3; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct3.cg
+
+hpct8: $(TARGET)
+	export OMP_NUM_THREADS=8; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct8.cg
+
+hpct16: $(TARGET)
+	export OMP_NUM_THREADS=16; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct16.cg
+
+hpct32: $(TARGET)
+	export OMP_NUM_THREADS=32; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct32.cg
+
+hpct48: $(TARGET)
+	export OMP_NUM_THREADS=48; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct48.cg
+
+hpct64: $(TARGET)
+	export OMP_NUM_THREADS=64; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct64.cg
+
+hpct128: $(TARGET)
+	export OMP_NUM_THREADS=128; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct128.cg
+
+hpct256: $(TARGET)
+	export OMP_NUM_THREADS=256; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct256.cg
+
+# Nvidia experiments with PC sampling with varying numbers of threads
+
+hpctpc1: $(TARGET)
+	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct1.cgp "--gpucfg yes"
+
+hpctpc2: $(TARGET)
+	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct2.cgp "--gpucfg yes"
+
+hpctpc3: $(TARGET)
+	export OMP_NUM_THREADS=3; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct3.cgp "--gpucfg yes"
+
+hpctpc8: $(TARGET)
+	export OMP_NUM_THREADS=8; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct8.cgp "--gpucfg yes"
+
+hpctpc16: $(TARGET)
+	export OMP_NUM_THREADS=16; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct16.cgp "--gpucfg yes"
+
+hpctpc32: $(TARGET)
+	export OMP_NUM_THREADS=32; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct32.cgp "--gpucfg yes"
+
+hpctpc48: $(targeT)
+	export OMP_NUM_THREADS=48; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct48.cgp "--gpucfg yes"
+
+hpctpc64: $(TARGET)
+	export OMP_NUM_THREADS=64; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct64.cgp "--gpucfg yes"
+
+hpctpc128: $(TARGET)
+	export OMP_NUM_THREADS=128; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct128.cgp "--gpucfg yes"
+
+hpctpc256: $(TARGET)
+	export OMP_NUM_THREADS=256; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct256.cgp "--gpucfg yes"
+

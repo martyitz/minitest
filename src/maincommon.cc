@@ -14,7 +14,9 @@ allocinitdata(int numthreads)
 
   /* allocate the l, r, and p arrays for each thread */
   for ( int k = 0; k < numthreads; k++) {
+#if 0
     fprintf(stderr, "  thread %d allocating and initializing data\n", k );
+#endif
 
     /* allocate and initialize the l and r arrays */
     lptr[k] = (double *) malloc (nn * sizeof(double) );
@@ -108,8 +110,6 @@ spacer(int timems, bool /*sleep */)
 {
   // convert the integer millisecond argument to a timespec
   const struct timespec tspec = {0, (long) timems * 1000000 };
-  //tspec.tv_sec = 0;
-  //tspec.tv_nsec = (long) timems * 1000000;
   
   // sleep for that amount of time
   int ret = nanosleep( &tspec, NULL);
