@@ -24,9 +24,9 @@ $(TARGET): single.o hipgpu.o
 	@echo ""
 	@echo ""
 
-run: run1 run2 run3 run8 run16 run32 run48 run64 run128 run256
+run: run1
 
-hpct: hpct1 hpct2 hpct3 hpct8 hpct16 hpct32 hpct48 hpct64 hpct128 hpct256
+hpct: hpct1
 
 include ../../maketargets/generic.targets
 include ../../maketargets/amd.targets

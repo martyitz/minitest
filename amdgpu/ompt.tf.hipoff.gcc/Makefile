@@ -20,7 +20,7 @@ hipgpu.o: ../../src/hipgpu.cu
 	$(HIPCXX) $(HIPCXXFLAGS) -c -o hipgpu.o ../../src/hipgpu.cu
 
 $(TARGET): ompthreads.o hipgpu.o
-	$(HIPCXX)  -DGPU_SMALL ompthreads.o hipgpu.o -o $(TARGET) ${LDFLAGS} ${MARCH}
+	$(HIPCXX)  -DGPU_SMALL ompthreads.o hipgpu.o -o $(TARGET) ${LDFLAGS}
 	@echo ""
 	@echo ""
 

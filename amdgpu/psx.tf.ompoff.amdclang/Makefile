@@ -3,8 +3,8 @@ TARGET	= psx.tf.ompoff.amdclang.amd
 
 default all: $(TARGET)
 
-MARCH = -march=gfx90a
 MARCH = -march=gfx906
+MARCH = -march=gfx90a
 MARCH = -march=gfx908
 
 CXX = amdclang++

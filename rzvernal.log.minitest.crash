@@ -1,0 +1,196 @@
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+minitest hpct -- invoked on Tue Jun 28 14:36:56 PDT 2022
+/g/g20/itzkowit/gits/minitest
+itzkowit @ rzvernal13
+
+Currently Loaded Modules:
+  1) StdEnv (S)   2) gcc/11.2.0   3) hpctoolkit/2022.05   4) rocm/5.1.1
+
+  Where:
+   S:  Module is Sticky, requires --force to unload or purge
+
+ 
+
+
+hpcrun: A member of HPCToolkit, version 2022.05.15-release
+git branch:  unknown (not a git repo)
+spack spec:  hpctoolkit@2022.05.15%gcc@11.2.0~all-static~cray~cuda~debug~level_zero+mpi+papi+rocm+viewer arch=cray-rhel8-x86_64/6vafodp
+install dir: /collab/usr/global/tools/hpctoolkit/toss_4_x86_64_ib_cray/.install/2022-05/packages/cray-rhel8-x86_64/gcc-11.2.0/hpctoolkit-2022.05.15-6vafodpfljywuixxi74n7tawq6lev3zi
+
+AMD clang version 14.0.0 (https://github.com/RadeonOpenCompute/llvm-project roc-5.1.1 22114 5cba46feb6af367b1cafaa183ec42dbfb8207b14)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /opt/rocm-5.1.1/llvm/bin
+
+gcc (GCC) 11.2.0 20210728 (Cray Inc.)
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+======================== Checking for Nvidia GPUs =============================
+No NVIDIA GPU driver found
+
+======================== Checking for AMD GPUs ================================
+Driver version: 5.13.20.22.10
+GPU[0]		: GPU ID: 0x7408
+GPU[1]		: GPU ID: 0x7408
+GPU[2]		: GPU ID: 0x7408
+GPU[3]		: GPU ID: 0x7408
+GPU[4]		: GPU ID: 0x7408
+GPU[5]		: GPU ID: 0x7408
+GPU[6]		: GPU ID: 0x7408
+GPU[7]		: GPU ID: 0x7408
+  AMD Firmware version: fw_version 61
+  Name:                    gfx90a                             
+      Name:                    amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+  Name:                    gfx90a                             
+      Name:                    amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+  Name:                    gfx90a                             
+      Name:                    amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+  Name:                    gfx90a                             
+      Name:                    amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+  Name:                    gfx90a                             
+      Name:                    amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+  Name:                    gfx90a                             
+      Name:                    amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+  Name:                    gfx90a                             
+      Name:                    amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+  Name:                    gfx90a                             
+      Name:                    amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+ROCM_PATH = /opt/rocm-5.1.1
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+=================================================================
+cd'ing to amdgpu/ompt.tf.hipoff.amdclang to run "make hpct"
+export OMP_NUM_THREADS=1; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct1.cg
+Launching /usr/bin/time hpcrun -o meas.hpct1.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct1.cg 2>&1
+0.15user 0.68system 0:02.17elapsed 38%CPU (0avgtext+0avgdata 708080maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 1   CPU = 1   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=2; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct2.cg
+Launching /usr/bin/time hpcrun -o meas.hpct2.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct2.cg 2>&1
+0.20user 1.09system 0:05.99elapsed 21%CPU (0avgtext+0avgdata 1333056maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 2   CPU = 2   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=3; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct3.cg
+Launching /usr/bin/time hpcrun -o meas.hpct3.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct3.cg 2>&1
+0.24user 1.49system 0:06.56elapsed 26%CPU (0avgtext+0avgdata 1958248maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 3   CPU = 3   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=8; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct8.cg
+Launching /usr/bin/time hpcrun -o meas.hpct8.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct8.cg 2>&1
+0.47user 3.40system 0:12.80elapsed 30%CPU (0avgtext+0avgdata 5083944maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 8   CPU = 8   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=16; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct16.cg
+Launching /usr/bin/time hpcrun -o meas.hpct16.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct16.cg 2>&1
+0.40user 1.11system 0:03.71elapsed 40%CPU (0avgtext+0avgdata 1334668maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 16   CPU = 16   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=32; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct32.cg
+Launching /usr/bin/time hpcrun -o meas.hpct32.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct32.cg 2>&1
+1.13user 1.90system 0:07.27elapsed 41%CPU (0avgtext+0avgdata 2586336maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 32   CPU = 32   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=48; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct48.cg
+Launching /usr/bin/time hpcrun -o meas.hpct48.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct48.cg 2>&1
+2.08user 2.69system 0:09.35elapsed 51%CPU (0avgtext+0avgdata 3838088maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 48   CPU = 48   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=64; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct64.cg
+Launching /usr/bin/time hpcrun -o meas.hpct64.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct64.cg 2>&1
+4.46user 3.47system 0:12.86elapsed 61%CPU (0avgtext+0avgdata 5089804maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 64   CPU = 64   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=128; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct128.cg
+Launching /usr/bin/time hpcrun -o meas.hpct128.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct128.cg 2>&1
+16.43user 1.34system 0:03.91elapsed 453%CPU (0avgtext+0avgdata 1346460maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 128   CPU = 128   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=256; runhpct ompt.tf.hip.amdclang.amd "-e CPUTIME -e gpu=amd -t" hpct256.cg
+Launching /usr/bin/time hpcrun -o meas.hpct256.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.amdclang.amd >>log.hpct256.cg 2>&1
+170.20user 2.64system 0:08.28elapsed 2085%CPU (0avgtext+0avgdata 2610764maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 256   CPU = 256   GPU = 0
+  Experiment gpubins-used: 0
+
+
+
+=================================================================
+cd'ing to amdgpu/ompt.tf.hipoff.gcc to run "make hpct"
+export OMP_NUM_THREADS=1; runhpct ompt.tf.hip.gcc.amd "-e CPUTIME -e gpu=amd -t" hpct1.cg
+Launching /usr/bin/time hpcrun -o meas.hpct1.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.gcc.amd >>log.hpct1.cg 2>&1
+0.16user 0.67system 0:02.07elapsed 40%CPU (0avgtext+0avgdata 708128maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 1   CPU = 1   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=2; runhpct ompt.tf.hip.gcc.amd "-e CPUTIME -e gpu=amd -t" hpct2.cg
+Launching /usr/bin/time hpcrun -o meas.hpct2.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.gcc.amd >>log.hpct2.cg 2>&1
+0.22user 1.07system 0:03.53elapsed 36%CPU (0avgtext+0avgdata 1333280maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 2   CPU = 2   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=3; runhpct ompt.tf.hip.gcc.amd "-e CPUTIME -e gpu=amd -t" hpct3.cg
+Launching /usr/bin/time hpcrun -o meas.hpct3.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.gcc.amd >>log.hpct3.cg 2>&1
+0.25user 1.47system 0:04.88elapsed 35%CPU (0avgtext+0avgdata 1958204maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 3   CPU = 3   GPU = 0
+  Experiment gpubins-used: 0
+
+
+export OMP_NUM_THREADS=8; runhpct ompt.tf.hip.gcc.amd "-e CPUTIME -e gpu=amd -t" hpct8.cg
+Launching /usr/bin/time hpcrun -o meas.hpct8.cg -e CPUTIME -e gpu=amd -t ./ompt.tf.hip.gcc.amd >>log.hpct8.cg 2>&1
+0.55user 3.39system 0:12.45elapsed 31%CPU (0avgtext+0avgdata 5083980maxresident)k
+Command terminated by signal 6
+ 
+  Experiment hpcrun files: 8   CPU = 8   GPU = 0
+  Experiment gpubins-used: 0
+
+
+$$$$$$$$$$$$$$$$  node rzvernal13 crashed in the next test with 16 threads
