@@ -94,31 +94,46 @@ grep avgtext log.$name
 echo " " >> log.$name
 
 # now look for various possible run time errors in the log file produced
-grep ERROR log.$name
-grep "Memory Error" log.$name
-grep "No valid target devices" log.$name
-grep "device offloading is now disabled" log.$name
-grep "Command terminated" log.$name
-grep "HPCToolkit fatal error" log.$name
-grep "Failed to allocate device vector" log.$name
-grep "Failed to copy" log.$name
-grep "Failed to free" log.$name
-grep "Failed to launch compute kernel" log.$name
-grep "libgomp: cuMemAlloc error: out of memory" log.$name
-grep "libgomp: device memory allocation fail" log.$name
-grep "Command exited with non-zero status" log.$name
-grep "symbol lookup error" log.$name
+/bin/rm -f rterrs.$name
+grep ERROR log.$name >> rterrs.$name
+grep "Memory Error" log.$name >> rterrs.$name
+grep "No valid target devices" log.$name >> rterrs.$name
+grep "device offloading is now disabled" log.$name >> rterrs.$name
+grep "Command terminated" log.$name >> rterrs.$name
+grep "HPCToolkit fatal error" log.$name >> rterrs.$name
+grep "Failed to allocate device vector" log.$name >> rterrs.$name
+grep "Failed to copy" log.$name >> rterrs.$name
+grep "Failed to free" log.$name >> rterrs.$name
+grep "Failed to launch compute kernel" log.$name >> rterrs.$name
+grep "libgomp: cuMemAlloc error: out of memory" log.$name >> rterrs.$name
+grep "libgomp: device memory allocation fail" log.$name >> rterrs.$name
+grep "Command exited with non-zero status" log.$name >> rterrs.$name
+grep "symbol lookup error" log.$name >> rterrs.$name
+
+if [ -a rterrs.$name ]; then
+	errs=`cat rterrs.$name | wc -l `
+	if [ "${errs}" == "0" ]; then
+		echo "    No runtime errors found." |  tee -a log.$name
+	else
+		echo "ERROR; found $errs runtime lines indicating errors:" |  tee -a log.$name
+		cat rterrs.$name
+		echo ""
+		exit 0
+	fi
+else
+	echo "ERROR -- SHOULD NEVER HAPPEN -- rterrs file not found" |  tee -a log.$name
+fi
 
 # Make sure there was a measurements directory; if so count CPU/GPU threads
 if [ -d meas.$name ]; then
 	echo " " | tee -a log.$name
 	THREADS=`ls meas.$name/*.hpcrun | wc -l`
-	CPUTHREADS=`ls meas.$name/*.hpcrun 2>/dev/null | grep -v "000000-5" | wc -l`
-	GPUTHREADS=`ls meas.$name/*-000000-5*.hpcrun 2>/dev/null | wc -l`
+	CPUTHREADS=`ls meas.$name/*-000000-[01234]*.hpcrun 2>/dev/null | wc -l`
+	GPUTHREADS=`ls meas.$name/*-000000-[56789]*.hpcrun 2>/dev/null | wc -l`
 	echo "  Experiment hpcrun files: $THREADS   CPU = $CPUTHREADS   GPU = $GPUTHREADS" | tee -a log.$name
 else
 	echo "ERROR: measurements directory does not exist" | tee -a log.$name
-	echo " "  |tee -a log.$name
+	echo " "  | tee -a log.$name
 	exit 0
 fi
 

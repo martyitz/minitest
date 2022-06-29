@@ -35,7 +35,8 @@ clean:
 	-/bin/rm -rf meas.*
 	-/bin/rm -rf dbase.* 
 	-/bin/rm -f *core*
-	-/bin/rm -f *log.*
+	-/bin/rm -f log.*
+	-/bin/rm -f rterrs.*
 	@echo ""
 	@echo ""
 

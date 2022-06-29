@@ -1,3 +1,7 @@
+# Determination of the architecture on the running machine
+
+AMD_ARCH := $(shell rocminfo | grep " gfx" | uniq | sed 's/Name://' | sed 's/[ \t]*//g' | sed 's/^/-march=/')
+
 # AMD GPU experiments without PC sampling with varying numbers of threads
 
 hpct1: $(TARGET)

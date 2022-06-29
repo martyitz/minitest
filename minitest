@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #------------------------------------------------------------
 # minitest:
 #
@@ -144,6 +144,8 @@ if [ -x `which rocm-smi` ]; then
 	cat /sys/class/kfd/kfd/topology/nodes/*/properties | grep ^fw_version  2>&1 | uniq | tee -a log.minitest
 	rocminfo | grep "gfx" | tee -a log.minitest
 	echo "ROCM_PATH = $ROCM_PATH" | tee -a log.minitest
+	AMD_ARCH=`rocminfo | grep " gfx" | uniq | sed 's/Name://' | sed 's/[ \t]*//' | sed 's/^/-march=/'`
+	echo "AMD_ARCH = ${AMD_ARCH}" | tee -a log.minitest
 else
 	echo "No AMD GPUs found" | tee -a log.minitest
 fi
@@ -168,5 +170,17 @@ do
 done
 echo " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"  2>&1 | tee -a log.minitest
 echo ""  2>&1 | tee -a log.minitest
+
+# Now check if all test ran OK, or if there was some error
+/bin/rm -f errs.minitest
+grep ERROR log.minitest >> errs.minitest
+grep "PLEASE submit a bug report to" log.minitest >> errs.minitest
+
+errs=`cat errs.minitest | wc -l `
+
+if  [ "${errs}" == "0" ]; then
+	echo "SUCCESS"
+else
+	echo "FAILED -- ${errs} errors found"
+fi
 exit 0
-No NVIDIA GPUs found
