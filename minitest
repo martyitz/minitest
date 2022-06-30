@@ -175,12 +175,13 @@ echo ""  2>&1 | tee -a log.minitest
 /bin/rm -f errs.minitest
 grep ERROR log.minitest >> errs.minitest
 grep "PLEASE submit a bug report to" log.minitest >> errs.minitest
+grep "fatal error" log.minitest >> errs.minitest
 
 errs=`cat errs.minitest | wc -l `
 
 if  [ "${errs}" == "0" ]; then
 	echo "SUCCESS"
 else
-	echo "FAILED -- ${errs} errors found"
+	echo "FAILED -- ${errs} errors found (some may be double counted)"
 fi
 exit 0
