@@ -43,6 +43,8 @@ initgpu()
   /* Test if GPU is available */
   int	idev = omp_is_initial_device();
 
+// We don't understand when this is supposed to to work
+#if 0
   int runningOnGPU = -1;
   #pragma omp target map(from:runningOnGPU)
   {
@@ -61,6 +63,7 @@ initgpu()
   } else {
     fprintf(stderr, "    gputest is able to use the GPU! idev = %d, runningOnGpU -- omp_is_initial_device()\n", idev );
   }
+#endif
 
   int ret = checkxfers();
   if (ret != 0 ) {

@@ -176,6 +176,7 @@ echo ""  2>&1 | tee -a log.minitest
 grep ERROR log.minitest >> errs.minitest
 grep "PLEASE submit a bug report to" log.minitest >> errs.minitest
 grep "fatal error" log.minitest >> errs.minitest
+grep "Error" log.minitest >> errs.minitest
 
 errs=`cat errs.minitest | wc -l `
 
