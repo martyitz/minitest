@@ -3,12 +3,8 @@ TARGET	= ompt.tf.ompoff.amdclang.amd
 
 default all: $(TARGET)
 
-MARCH = -march=gfx906
-MARCH = -march=gfx908
-MARCH = -march=gfx90a
-
 CXX = amdclang++
-OMPFLAGS = -g -O2 -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa $(MARCH)
+OMPFLAGS = -g -O2 -fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa $(AMD_ARCH)
 
 LDFLAGS = -fopenmp -lm -L${HIP}/lib64/
 
