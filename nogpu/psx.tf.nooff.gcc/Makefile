@@ -8,42 +8,30 @@ OMPFLAGS = -g -O2 -fopenmp -lm
 
 $(TARGET): ${SRCS}
 	$(CXX) $(OMPFLAGS) -o $(TARGET) ${SRCS}
+	@echo ""
+	@echo ""
 
-run: run1 run2 run3
+run: runa runb runc
 
-run1: $(TARGET)
+runa: $(TARGET)
 	export OMP_NUM_THREADS=1; runrun $(TARGET) run1
 
-run2: $(TARGET)
+runb: $(TARGET)
 	export OMP_NUM_THREADS=2; runrun $(TARGET) run2
 
-run3: $(TARGET)
+runc: $(TARGET)
 	export OMP_NUM_THREADS=3; runrun $(TARGET) run3
 
-hpct: hpct1 hpct2 hpct3
+hpct: hpcta hpctb hpctc
 
-hpct1: $(TARGET)
+hpcta: $(TARGET)
 	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -t" hpct1.c
 
-hpct2: $(TARGET)
+hpctb: $(TARGET)
 	export OMP_NUM_THREADS=2; runhpct $(TARGET) "-e CPUTIME -t" hpct2.c
 
-hpct3: $(TARGET)
+hpctc: $(TARGET)
 	export OMP_NUM_THREADS=3; runhpct $(TARGET) "-e CPUTIME -t" hpct3.c
 
-collect: $(TARGET)
-	collect -p hi $(TARGET)
-	er_print -func test.1.er
 
-clean:
-	-/bin/rm -rf meas.*
-	-/bin/rm -rf dbase.*
-	-/bin/rm -f *core*
-	-/bin/rm -f *log.*
-	-/bin/rm -rf test.*.er
-	@echo ""
-	@echo ""
-
-clobber: clean
-	-/bin/rm -rf *.o $(TARGET)
-	@echo ""
+include ../../maketargets/generic.targets

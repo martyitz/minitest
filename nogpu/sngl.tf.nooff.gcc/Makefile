@@ -8,33 +8,20 @@ OMPFLAGS = -g -O2 -fopenmp -lm
 
 $(TARGET): ${SRCS}
 	$(CXX) $(OMPFLAGS) -o $(TARGET) ${SRCS}
+	@echo ""
+	@echo ""
 
-run: run1
+run: runa
 
-run1: $(TARGET)
+runa: $(TARGET)
 	runrun $(TARGET) run1
 
-hpct: hpct1 hpct2
+hpct: hpcta hpctb
 
-hpct1: $(TARGET)
+hpcta: $(TARGET)
 	runhpct $(TARGET) "-e CPUTIME -t" hpct1.c
 
-hpct2: $(TARGET)
+hpctb: $(TARGET)
 	runhpct $(TARGET) "-e cycles -t" hpct2.c
 
-collect: $(TARGET)
-	collect -p hi $(TARGET)
-	er_print -func test.1.er
-
-clean:
-	-/bin/rm -rf meas.*
-	-/bin/rm -rf dbase.*
-	-/bin/rm -f *core*
-	-/bin/rm -f *log.*
-	-/bin/rm -rf test.*.er
-	@echo ""
-	@echo ""
-
-clobber: clean
-	-/bin/rm -rf *.o $(TARGET)
-	@echo ""
+include ../../maketargets/generic.targets

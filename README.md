@@ -1,6 +1,12 @@
 # minitest
 Minitest of various simple CPU/GPU codes
 
+The Repository
+--------------
+The "minitest" repository is in github.  To install it:
+	git clone https://github.com/martyitz/minitest
+
+
 The Script
 ----------
 The "minitest" script goes through a list of directories, cd's to each, and
