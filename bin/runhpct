@@ -116,7 +116,7 @@ grep "libgomp: cuMemAlloc error: out of memory" log.$name >> rterrs.$name
 grep "libgomp: device memory allocation fail" log.$name >> rterrs.$name
 grep "Command exited with non-zero status" log.$name >> rterrs.$name
 grep "symbol lookup error" log.$name >> rterrs.$name
-grep "call to cuMemAlloc returned error" log.$name >> rterrs.$name"
+grep "call to cuMemAlloc returned error" log.$name >> rterrs.$name
 
 if [ -a rterrs.$name ]; then
 	errs=`cat rterrs.$name | wc -l `
