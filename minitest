@@ -144,7 +144,7 @@ if [ -x `which rocm-smi` ]; then
 	cat /sys/class/kfd/kfd/topology/nodes/*/properties | grep ^fw_version  2>&1 | uniq | tee -a log.minitest
 	rocminfo | grep "gfx" | tee -a log.minitest
 	echo "ROCM_PATH = $ROCM_PATH" | tee -a log.minitest
-	AMD_ARCH=`rocminfo | grep " gfx" | uniq | sed 's/Name://' | sed 's/[ \t]*//' | sed 's/^/-march=/'`
+	AMD_ARCH=`rocminfo | grep " gfx" | uniq | sed 's/Name://' | sed 's/[ \t]*//' | sed 's/^/-march=/' | head -1`
 	echo "AMD_ARCH = ${AMD_ARCH}" | tee -a log.minitest
 else
 	echo "No AMD GPUs found" | tee -a log.minitest
