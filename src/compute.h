@@ -15,9 +15,15 @@
 #endif
 
 #if 1
-    // use transcendental function in the kernel
-    d_p1[i] = d_p1[i] + 1.+ (sqrt( exp( log (d_l1[i]*d_l1[i]) ) + exp( log (d_r1[i]*d_r1[i]) ) ) ) /
+    // do a vector add in the kernel
+#ifndef kkmax
+#define kkmax 200
+#endif
+    for (int kk = 0 ; kk < kkmax ; kk++ ) {
+      // use transcendental function in the kernel
+      d_p1[i] = d_p1[i] + 1.+ (sqrt( exp( log (d_l1[i]*d_l1[i]) ) + exp( log (d_r1[i]*d_r1[i]) ) ) ) /
         ( sqrt (exp( log(d_l1[i]*d_r1[i]) ) + exp( log( (d_r1[i]*d_l1[i]) )) ) );
+    }
 #endif
 
 #if 0

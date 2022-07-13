@@ -17,6 +17,7 @@ twork( int iter, int threadnum)
   {
     for (size_t i = 0; i < nn; ++i) {
 
+#define kkmax 1
 #include "compute.h"
 
     }
