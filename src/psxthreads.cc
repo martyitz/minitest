@@ -27,7 +27,8 @@ int nthreads;
 int
 main(int argc, char *argv[], char **envp)
 {
-  //fprintf(stderr, "sizeof(double) = %d; sizeof(double *) = %d\n", sizeof(double), sizeof(double*) );
+  /* setup_run -- parse the arguments, to reset N and NITER, as requested; set post report flag */
+  setup_run(argc, argv);
 
   /* check number and accessibility of GPU devices */
   initgpu();
@@ -53,8 +54,8 @@ main(int argc, char *argv[], char **envp)
     nn = nn/8;
   }
 
-  fprintf(stderr, "\nThis run of minitest will use %d CPU thread%s with data array size = %ld\n",
-    nthreads, (nthreads==1 ? "" : "s"), nn );
+  fprintf(stderr, "\nThis run of minitest will use %d CPU thread%s with data array size = %ld; for %d iterations\n",
+    nthreads, (nthreads==1 ? "" : "s"), nn, niter );
 
   /* Allocate and initialize data */
   allocinitdata(nthreads);
@@ -101,6 +102,13 @@ main(int argc, char *argv[], char **envp)
     pthread_join(tid[i], 0);
   }
   fprintf(stderr, "All threads have exited\n");
+
+  if (run_post_report == true) {
+    system("postrept");
+  }
+
+  teardown_run();
+  return 0;
 }
 
 
@@ -112,7 +120,7 @@ do_work(void *tnum)
   // fprintf(stderr, "do_work entered for worker thread %d\n", thread_num );
 
   /* perform the number of iterations requested */
-  for (int k = 0; k < NITER; k++) {
+  for (int k = 0; k < niter; k++) {
       /* invoke the GPU-specific offloaded computation */
       twork(k, thread_num );
 

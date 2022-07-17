@@ -1,0 +1,3 @@
+# Determination of the architecture on the running machine
+
+MPI_HOME := $(shell which mpirun | sed 's/bin\/mpirun//')

@@ -37,11 +37,12 @@ clean:
 	-/bin/rm -f *core*
 	-/bin/rm -f log.*
 	-/bin/rm -f rterrs.*
+	-/bin/rm -rf hpctoolkit-*
 	@echo ""
 	@echo ""
 
 clobber: clean
-	-/bin/rm -rf *.o $(TARGET)
+	-/bin/rm -rf *.o $(TARGET) $(MPITARGET)
 	@echo ""
 	/bin/ls -lF
 	@echo ""

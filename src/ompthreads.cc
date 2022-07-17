@@ -25,6 +25,9 @@ int omp_num_t;
 int
 main(int argc, char *argv[], char **envp)
 {
+  /* setup_run -- parse the arguments, to reset N and NITER, as requested; set postreport flag */
+  setup_run(argc, argv);
+
   /* check number and accessibility of GPU devices */
   initgpu();
 
@@ -39,15 +42,14 @@ main(int argc, char *argv[], char **envp)
     nn = nn/8;
   }
 
-  fprintf(stderr, "This run of minitest will use %d CPU thread%s with data array size = %ld\n",
-    omp_num_t, (omp_num_t==1 ? "" : "s"), nn );
-
+  fprintf(stderr, "This run of minitest will use %d CPU thread%s with data array size = %ld; for %d iterations\n",
+    omp_num_t, (omp_num_t==1 ? "" : "s"), nn, niter );
 
   /*  Allocate and initialize data */
   allocinitdata(omp_num_t);
 
   /* perform the number of iterations requested */
-  for (int k = 0; k < NITER; k++) {
+  for (int k = 0; k < niter; k++) {
     #pragma omp parallel
     {
       /* invoke the GPU-specific offloaded computation */
@@ -71,6 +73,11 @@ main(int argc, char *argv[], char **envp)
     checkdata(k, pptr[k], nn );
   }
 
+  if (run_post_rept == true) {
+    system("postrept");
+  }
+
+  teardown_run();
   return 0;
 }
 

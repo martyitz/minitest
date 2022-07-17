@@ -1,6 +1,105 @@
 
 // #include "minitest.h"
+#ifdef USE_MPI
+#include <mpi.h>
+#endif
 
+
+/*==================================================================*/
+/* Routine to set up the run*/
+/*	process arguments to extract values for nn and niter */
+/*	check for environment variable"RUN_POST_REPT"
+/*	If USE_MPI is defined, call MPI_Init */
+
+static void Print_Usage(void);
+
+bool run_post_rept = false;
+
+void
+setup_run(int argcc, char **argvv)
+{
+  int		i, j, num;
+  int		ii;
+  char	*p;
+
+  if (argcc >=2)  /* run testcode with options */ {
+    for (i = 1; i < argcc; i++) {
+      j = i;
+
+      if(argvv[i][0] != '-') {
+  	Print_Usage();
+      }
+
+      if (strlen(argvv[i]) == 2) {
+  	/* argument has blank separating key and number */
+  	j++;
+  	if (argcc > j) {
+  	    p = argvv[j];
+  	    num = atoll(p);
+  	} else {
+  	    Print_Usage();
+  	}
+      } else {
+  	/* argument has no blank separating key and number */
+  	p = argvv[i] + 2;
+  	num = atoll(p);
+      }
+  
+      switch (argvv[i][1]) {
+  	case 'N':
+  	    nn = num;
+  	    break;
+  
+  	case 'I':
+  	    niter = num;
+  	    break;
+  
+  	default:
+  	    Print_Usage();
+      }
+      i = j;
+    }
+
+  }
+
+  // Check for environment variable to run the post-report binary
+  char *s = getenv("RUN_POST_REPT");
+  if (s != NULL) { 
+    fprintf(stderr, "    Running of post-report enabled\n");
+    run_post_rept = true;
+  } else {
+    fprintf(stderr, "    Running of post-report disabled\n");
+    run_post_rept = false;
+  }
+#ifdef USE_MPI
+  MPI_Init(&argcc, &argvv);
+#endif
+
+}
+static void
+Print_Usage(void)
+{
+  fprintf( stderr, "Usage: <test_name> [-N array_size] [-I iteration_count]\n");
+
+  exit(-1);
+
+}
+
+
+/*==================================================================*/
+/* Routine to tear down the run*/
+/*	If USE_MPI is defined, call MPI_Finalize */
+void
+teardown_run(void)
+{
+#ifdef USE_MPI
+  MPI_Finalize();
+#endif
+}
+
+/*==================================================================*/
+/*	Various routines to allocate and initialize data */
+/*	Also, routines to check data, and output results */
 
 void
 allocinitdata(int numthreads)
@@ -106,14 +205,135 @@ checkdata(int threadnum, double *p, size_t size)
 }
 
 void
-spacer(int timems, bool /*sleep */)
+spacer(int timems, bool spin )
 {
-  // convert the integer millisecond argument to a timespec
-  const struct timespec tspec = {0, (long) timems * 1000000 };
-  
-  // sleep for that amount of time
-  int ret = nanosleep( &tspec, NULL);
-  if (ret != 0) {
-    fprintf(stderr, "nanosleep interrupted\n" );
+  if (spin == false ){ 
+    // convert the integer millisecond argument to a timespec
+    const struct timespec tspec = {0, (long) timems * 10000000 };
+
+    // sleep for that amount of time
+    int ret = nanosleep( &tspec, NULL);
+    if (ret != 0) {
+      fprintf(stderr, "nanosleep interrupted\n" );
+    }
+
+  } else {
+    // burn CPU which will be visible in the traced callstacks
+
+    int	j,k;	/* temp values for loops */
+    volatile float	x;	/* temp variable for f.p. calculation */
+    long long count = 0;
+
+    for (k= 0; k < 50; k++) {
+      x = 0.0;
+      for(j=0; j<1000000; j++) {
+        x = x + 1.0;
+      }
+      count++;
+    }
   }
 }
+
+/* =============================================================== */
+/*  Routines for high-resolution timers */
+
+hrtime_t
+gethrvtime(void)
+{
+  int r;
+  struct timespec tp;
+  hrtime_t rc = 0;
+  
+  r =clock_gettime(CLOCK_THREAD_CPUTIME_ID, &tp);
+  if (r == 0) {
+      rc = ((hrtime_t)tp.tv_sec)*1000000000 + (hrtime_t)tp.tv_nsec; 
+  }
+
+  return rc;
+}
+
+/* generic gethrtime() -- using clock_gettime(CLOCK_MONOTONIC, ...), and reformatting */
+/*
+ *  CLOCK_MONOTONIC
+ *  Clock that cannot be set and represents monotonic time since some
+ *           unspecified starting point.
+ */
+
+hrtime_t
+gethrtime(void)
+{
+    int r;
+    struct timespec tp;
+    hrtime_t rc = 0;
+
+    r =clock_gettime(CLOCK_MONOTONIC, &tp);
+    if (r == 0) {
+        rc = ((hrtime_t)tp.tv_sec)*1000000000 + (hrtime_t)tp.tv_nsec; 
+    }
+
+    return rc;
+}
+
+static	char	*prhrdelta(hrtime_t);
+static	char	*prhrvdelta(hrtime_t);
+
+/* hrtime routines */
+int
+whrvlog(hrtime_t delta, hrtime_t vdelta, char *event, char *string)
+{
+	char	buf[1024];
+	int	bytes;
+
+	if(string == NULL) {
+		sprintf(buf,
+			"  %s wall-secs., %s CPU-secs., in %s\n",
+			prhrdelta(delta),
+			prhrvdelta(vdelta),
+			event);
+	} else {
+		sprintf(buf,
+			"  %s wall-secs., %s CPU-secs., in %s\n\t%s\n",
+			prhrdelta(delta),
+			prhrvdelta(vdelta),
+			event, string);
+	}
+
+	bytes = fprintf(stderr, "%s", buf);
+	return bytes;
+}
+
+
+/*	prhrdelta (hrtime_t delta)
+ *		returns a pointer to a static string in the form:
+ *		sec.micros
+ *		  1.123456
+ *		0123456789
+ *
+ *	prhrvdelta is the same, but uses a different static buffer
+ */
+
+static	char	*
+prhrdelta(hrtime_t delta)
+{
+	static	char	cvdbuf[26];
+	double	tempus;
+
+	/* convert to seconds */
+	tempus = ( (double) delta) / (double)1000000000.;
+	sprintf(cvdbuf, "%10.6f", tempus);
+	return(cvdbuf);
+}
+
+static	char	*
+prhrvdelta(hrtime_t delta)
+{
+	static	char	cvdbuf[26];
+	double	tempus;
+
+	/* convert to seconds */
+	tempus = ( (double) delta) / (double)1000000000.;
+	sprintf(cvdbuf, "%10.6f", tempus);
+	return(cvdbuf);
+}
+
+
