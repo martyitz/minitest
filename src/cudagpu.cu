@@ -27,6 +27,10 @@ twork( int iter, int threadnum)
 
   cudaError_t err = cudaSuccess;
 
+#if 0
+  fprintf(stderr, "[%d]    T %d, I %d, start cuda twork\n",
+      thispid, threadnum, iter );
+#endif
   //allocate device memory for copying in l1 and r1, copying out p1
   size_t size = nn * sizeof(double);
   double *d_l1 = NULL;
@@ -171,7 +175,7 @@ twork( int iter, int threadnum)
       thispid, threadnum, iter, d_p1 );
 #endif
   }
-#if 9
+#if 0
   fprintf(stderr, "    [%d] Completed iteration %d, thread %d\n\n",
     thispid, iter, threadnum);
 #endif

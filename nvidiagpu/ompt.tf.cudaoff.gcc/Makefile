@@ -33,11 +33,14 @@ $(MPITARGET): ompthreadsmpi.o cudagpu.o
 	@echo ""
 	@echo ""
 
+hpctpost: $(TARGET)
+	export RUN_POST_REPT=1; runhpct "$(TARGET) -N 100000 -I 1" "-e CPUTIME -e gpu=nvidia -t" hpctpost.cg
+
 hpctmpi: $(MPITARGET)
-	export RUN_POST_REPT=1; runmpihpc "-N 2" "$(MPITARGET)  -N 100000 -I 1" "-e CPUTIME -e gpu=nvidia -t" hpcmpi
+	export RUN_POST_REPT=1; runmpihpc "-N 2" "$(MPITARGET)  -N 100000 -I 1" "-e CPUTIME -e gpu=nvidia -t" hpctmpi.cg
 
 hpctmpipc: $(MPITARGET)
-	export RUN_POST_REPT=1; runmpihpc "-N 2" "$(MPITARGET)  -N 100000 -I 1" "-e CPUTIME -e gpu=nvidia,pc -t" hpcmpipc
+	export RUN_POST_REPT=1; runmpihpc "-N 2" "$(MPITARGET)  -N 100000 -I 1" "-e CPUTIME -e gpu=nvidia,pc -t" hpctmpi.cgp
 
 run: run1 run2 run3 run8 run16 run32 run48 run64 run128 run256
 
