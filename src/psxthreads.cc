@@ -38,11 +38,11 @@ main(int argc, char *argv[], char **envp)
   if (s != NULL) {
     nthreads = atoi(s);
     if ( (nthreads < 1) || (nthreads > 256) ) {
-      fprintf(stderr, "OMP_NUM_THREADS (%d) out of range; < 1 or > 256 setting to 2 \n", nthreads );
+      fprintf(stderr, "[%d] OMP_NUM_THREADS (%d) out of range; < 1 or > 256 setting to 2 \n", thispid, nthreads );
       nthreads = 2;
     }
   } else {
-    fprintf(stderr, "OMP_NUM_THREADS  was not set; setting to 2\n" );
+    fprintf(stderr, "[%d] OMP_NUM_THREADS was not set; setting to 2\n", thispid );
       nthreads = 2;
   }
 
@@ -54,8 +54,8 @@ main(int argc, char *argv[], char **envp)
     nn = nn/8;
   }
 
-  fprintf(stderr, "\nThis run of minitest will use %d CPU thread%s with data array size = %ld; for %d iterations\n",
-    nthreads, (nthreads==1 ? "" : "s"), nn, niter );
+  fprintf(stderr, "\n    [%d] This run will use %d CPU thread%s with data array size = %ld; for %d iterations\n\n",
+    thispid, nthreads, (nthreads==1 ? "" : "s"), nn, niter );
 
   /* Allocate and initialize data */
   allocinitdata(nthreads);
@@ -91,19 +91,21 @@ main(int argc, char *argv[], char **envp)
     }
 
 #if 0
-    fprintf(stderr, "  created thread %d (tnum = %d)\n", i, tnum[i] );
+    fprintf(stderr, "  [%d] created thread %d (tnum = %d)\n", i, thispid, tnum[i] );
 #endif
   }
 
-  fprintf(stderr, "All threads created; waiting for them to exit\n");
+#if 0
+  fprintf(stderr, "[%d] All threads created; waiting for them to exit\n", thispid );
+#endif
 
   /* wait for all threads to complete their work and join */
   for (int i = 0; i < nthreads; i++) {
     pthread_join(tid[i], 0);
   }
-  fprintf(stderr, "All threads have exited\n");
+  fprintf(stderr, "[%d] All threads have exited\n", thispid );
 
-  if (run_post_report == true) {
+  if (run_post_rept == true) {
     system("postrept");
   }
 
@@ -117,7 +119,7 @@ void *
 do_work(void *tnum)
 {
   volatile int thread_num = (int) *(int *)tnum;
-  // fprintf(stderr, "do_work entered for worker thread %d\n", thread_num );
+  // fprintf(stderr, "[%d] do_work entered for worker thread %d\n", thispid, thread_num );
 
   /* perform the number of iterations requested */
   for (int k = 0; k < niter; k++) {
@@ -125,7 +127,7 @@ do_work(void *tnum)
       twork(k, thread_num );
 
 #if 0
-    fprintf(stderr, " thread %d -- end iteration %d\n", thread_num, k);
+    fprintf(stderr, " [%d[ thread %d -- end iteration %d\n", thispid, thread_num, k);
 #endif
   }
 
@@ -134,7 +136,7 @@ do_work(void *tnum)
   checkdata(thread_num, pptr[thread_num], nn );
 
 #if 0
-  fprintf(stderr, " worker thread %d exiting\n", thread_num);
+  fprintf(stderr, " [%d] worker thread %d exiting\n", thispid, thread_num);
 #endif
   pthread_exit(NULL);
 }

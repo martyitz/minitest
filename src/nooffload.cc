@@ -10,8 +10,8 @@ twork( int iter, int threadnum)
   size_t nelements = nn;
 
 #if 0
-  fprintf(stderr, "Iteration %3d,   l1[%d] = 0x%016llx;   r1[%d] = 0x%016llx;   p1[%d] = 0x%016llx\n",
-    iter, threadnum, l1, threadnum, r1, threadnum, p1 );
+  fprintf(stderr, "[%d] Iteration %3d,   l1[%d] = 0x%016llx;   r1[%d] = 0x%016llx;   p1[%d] = 0x%016llx\n",
+    thispid. iter, threadnum, l1, threadnum, r1, threadnum, p1 );
 #endif
 
   {
@@ -29,5 +29,5 @@ void
 initgpu()
 {
   /* this version does no offloading */
-  fprintf(stderr, "This run does not use any GPU devices\n");
+  fprintf(stderr, "    [%d] This run does not use any GPU devices\n", thispid );
 }

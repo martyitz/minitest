@@ -80,6 +80,9 @@ if [ "$1" == "clean" ]; then
 	go="t"
 fi
 
+if [ "$1" == "all" ]; then
+	go="t"
+fi
 if [ "$1" == "default" ]; then
 	go="t"
 fi

@@ -27,20 +27,26 @@ main(int argc, char **argv, char **envp)
 
   /* set thread count to one */
   omp_num_t = 1;
-  fprintf(stderr, "This test will use a single CPU thread with data array size = %ld; for %d iterations\n",
-    nn, niter );
+  fprintf(stderr, "    [%d] This test will use a single CPU thread with data array size = %ld; for %d iterations\n\n",
+    thispid, nn, niter );
 
   /* Allocate and initialize data */
   allocinitdata(omp_num_t);
 
   /* perform the number of iterations requested */
+  fprintf(stderr, "  [%d] start %d iteration%s\n", thispid, niter, (niter ==1 ? "" : "s") );
   for (int k = 0; k < niter; k++) {
-    fprintf(stderr, " start iteration %d\n", k);
+#if 0
+    fprintf(stderr, "    [%d] start iteration %d\n", thispid, k);
+#endif
     {
       twork(k, 0 );
     }
-    fprintf(stderr, " end   iteration %d\n", k);
+#if 0
+    fprintf(stderr, "  [%d] end     iteration %d\n", thispid, k);
+#endif
   }
+  fprintf(stderr, "  [%d] end %d iteration%s\n", thispid, niter,  (niter ==1 ? "" : "s") );
 
   /* write out various elements in each thread's result array */
   for (int k = 0; k < omp_num_t; k++) {

@@ -34,9 +34,7 @@ $(MPITARGET): ompthreadsmpi.o hipgpu.o
 	@echo ""
 
 hpctmpi: $(MPITARGET)
-	export RUN_POST_REPT=1; mpirun -N 2 hpcrun -e CPUTIME -e gpu=amd -t $(MPITARGET)
-	hpcstruct hpctoolkit*$(MPITARGET)*measurements
-	hpcprof hpctoolkit*$(MPITARGET)*measurements
+	export RUN_POST_REPT=1; runmpihpc "-N 2" "$(MPITARGET)  -N 100000 -I 1" "-e CPUTIME -e gpu= nvidia -t" hpcmpi
 
 run: run1 run2 run3 run8 run16 run32 run48 run64 run128 run256
 

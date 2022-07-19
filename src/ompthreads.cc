@@ -42,8 +42,8 @@ main(int argc, char *argv[], char **envp)
     nn = nn/8;
   }
 
-  fprintf(stderr, "This run of minitest will use %d CPU thread%s with data array size = %ld; for %d iterations\n",
-    omp_num_t, (omp_num_t==1 ? "" : "s"), nn, niter );
+  fprintf(stderr, "    [%d] This run will use %d CPU thread%s with data array size = %ld; for %d iterations\n\n",
+    thispid, omp_num_t, (omp_num_t==1 ? "" : "s"), nn, niter );
 
   /*  Allocate and initialize data */
   allocinitdata(omp_num_t);
@@ -64,8 +64,12 @@ main(int argc, char *argv[], char **envp)
       output(k, pptr[k], nn, "current p array");
     }
 #endif
-    fprintf(stderr, " end iteration %d for all threads\n", k);
+#if 0
+    fprintf(stderr, " [%d] end iteration %d for all threads\n", thispid, k);
+#endif
   }
+  fprintf(stderr, " [%d] end %d iteration%s for all threads\n",
+    thispid, niter, (niter==1? "" : "s") );
 
   /* write out various elements in each thread's result array */
   for (int k = 0; k < omp_num_t; k++) {

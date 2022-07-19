@@ -4,16 +4,20 @@
 #include <mpi.h>
 #endif
 
+// Global vsriables, defined here
+bool run_post_rept = false;
+pid_t	thispid;
+int	mpi_rank = -1;
 
 /*==================================================================*/
 /* Routine to set up the run*/
 /*	process arguments to extract values for nn and niter */
-/*	check for environment variable"RUN_POST_REPT"
+/*	check for environment variable"RUN_POST_REPT" */
 /*	If USE_MPI is defined, call MPI_Init */
 
 static void Print_Usage(void);
 
-bool run_post_rept = false;
+static char hostname[1024];
 
 void
 setup_run(int argcc, char **argvv)
@@ -62,20 +66,43 @@ setup_run(int argcc, char **argvv)
 
   }
 
+#ifdef USE_MPI
+  MPI_Init(&argcc, &argvv);
+
+  // Determine rank
+  int res;
+  MPI_Comm communicator = MPI_COMM_WORLD;
+  res = MPI_Comm_rank (communicator, &mpi_rank);
+  if (res != MPI_SUCCESS) {
+    fprintf (stderr, "MPI_Comm_rank failed\n");
+  exit (-1);
+  }
+#endif
+  thispid = getpid();
+  int ret;
+  if (gethostname (hostname, 1024) != 0 ) {
+    fprintf(stderr, "gethostname failed: %d, err = %s\n", ret, strerror(errno) ); 
+    exit(-1);
+  }
+
+  if (mpi_rank == -1 ) {
+    fprintf(stderr, "  [%d] Process %d, Host %s\n",
+      thispid, thispid, hostname );
+  } else {
+    fprintf(stderr, "  [%d] Process %d, MPI Rank %d,  Host %s\n",
+      thispid, thispid, mpi_rank, hostname );
+  }
   // Check for environment variable to run the post-report binary
   char *s = getenv("RUN_POST_REPT");
   if (s != NULL) { 
-    fprintf(stderr, "    Running of post-report enabled\n");
+    fprintf(stderr, "    [%d] Running of post-report enabled\n", thispid );
     run_post_rept = true;
   } else {
-    fprintf(stderr, "    Running of post-report disabled\n");
+    fprintf(stderr, "    [%d] Running of post-report disabled\n", thispid );
     run_post_rept = false;
   }
-#ifdef USE_MPI
-  MPI_Init(&argcc, &argvv);
-#endif
-
 }
+
 static void
 Print_Usage(void)
 {
@@ -104,7 +131,9 @@ teardown_run(void)
 void
 allocinitdata(int numthreads)
 {
-  fprintf(stderr, "Allocating and initializing data for %d threads\n", numthreads );
+#if 0
+  fprintf(stderr, "[%d] Allocating and initializing data for %d threads\n", thispid, numthreads );
+#endif
 
   /* allocate pointer arrays for the threads */
   rptr = (double **) calloc(numthreads, sizeof(double *) );
@@ -114,20 +143,20 @@ allocinitdata(int numthreads)
   /* allocate the l, r, and p arrays for each thread */
   for ( int k = 0; k < numthreads; k++) {
 #if 0
-    fprintf(stderr, "  thread %d allocating and initializing data\n", k );
+    fprintf(stderr, "  [%d] thread %d allocating and initializing data\n", thispid, k );
 #endif
 
     /* allocate and initialize the l and r arrays */
     lptr[k] = (double *) malloc (nn * sizeof(double) );
     if(lptr[k] == NULL) {
-      fprintf(stderr, "Allocation for lptr[%d] failed; aborting\n", k);
+      fprintf(stderr, "[%d] Allocation for lptr[%d] failed; aborting\n", thispid, k);
       abort();
     }
     init(lptr[k], nn);
 
     rptr[k] = (double *) malloc (nn * sizeof(double) );
     if(rptr[k] == NULL) {
-      fprintf(stderr, "Allocation for rptr[%d] failed; aborting\n", k);
+      fprintf(stderr, "[%d] Allocation for rptr[%d] failed; aborting\n", thispid, k);
       abort();
     }
     init(rptr[k], nn);
@@ -135,18 +164,20 @@ allocinitdata(int numthreads)
     /* allocate and clear the result array */
     pptr[k] = (double *) calloc(nn, sizeof(double) );
     if(pptr[k] == NULL) {
-      fprintf(stderr, "Allocation for pptr[%d] failed; aborting\n", k);
+      fprintf(stderr, "[%d] Allocation for pptr[%d] failed; aborting\n", thispid, k);
       abort();
     }
-    fprintf(stderr, "  thread %d finished allocating and initializing data\n", k );
+#if 0
+    fprintf(stderr, "  [%d] thread %d finished allocating and initializing data\n", thispid, k );
+#endif
   }
 
   // DEBUG -- print addresses and result contents
 #if 0
-  fprintf(stderr, "Initial allocation of arrays\n");
+  fprintf(stderr, "[%d] Initial allocation of arrays\n", thispid );
   for ( int k = 0; k < numthreads; k++) {
-    fprintf(stderr,  "Thread %d,      lptr[%d] = %p; rptr[%d] = %p, pptr[%d] = %p\n",
-      k, k, lptr[k], k, rptr[k], k, pptr[k] );
+    fprintf(stderr,  "[%d] Thread %d,      lptr[%d] = %p; rptr[%d] = %p, pptr[%d] = %p\n",
+      thispid, k, k, lptr[k], k, rptr[k], k, pptr[k] );
   }
 
   for ( int k = 0; k < omp_num_t; k++) {
@@ -175,8 +206,8 @@ output( int threadnum, double *p, size_t size, const char *label)
   size_t i = size -1;
   size_t j = size/8;
   size_t k = size/16;
-  fprintf(stderr, "%s -- t %d, p[%zu]=%g; p[%zu]=%g; p[%zu]=%g; p[%zu]=%g; p[%zu]=%g\n",
-    label, threadnum, 0UL, p[0], 1UL, p[1], k, p[k], j, p[j], i, p[i]);
+  fprintf(stderr, "    [%d] %s -- t %d, p[%zu]=%g; p[%zu]=%g; p[%zu]=%g; p[%zu]=%g; p[%zu]=%g\n",
+    thispid, label, threadnum, 0UL, p[0], 1UL, p[1], k, p[k], j, p[j], i, p[i]);
 }
 
 /* check the elements of the p array */
@@ -188,19 +219,19 @@ checkdata(int threadnum, double *p, size_t size)
     /* check that the elements of the p array are all the same */
     if (p[m] != p[0])  {
       if ( cnt < 5) {
-        fprintf(stderr, "     ==> ERROR -- thread %d: p[%d] (=%g) != p[0] (=%g)\n",
-          threadnum, m, p[m], p[0]);
+        fprintf(stderr, "    [%d] ==> ERROR -- thread %d: p[%d] (=%g) != p[0] (=%g)\n",
+          thispid, threadnum, m, p[m], p[0]);
       }
       cnt ++;
     }
   }
   // print the count of errors
   if (cnt != 0) {
-    fprintf(stderr, "     ==> ERROR count -- thread %d: %d;  good count = %d\n",
-      threadnum, cnt, (int)size - cnt);
+    fprintf(stderr, "      [%d] ==> ERROR count -- thread %d: %d;  good count = %d\n",
+      thispid, threadnum, cnt, (int)size - cnt);
   } else {
-    fprintf(stderr, "     all good -- thread %d: %d;  good count = %d\n",
-      threadnum, cnt, (int)size - cnt);
+    fprintf(stderr, "      [%d] all good -- thread %d: %d;  good count = %d\n",
+      thispid, threadnum, cnt, (int)size - cnt);
   }
 }
 
@@ -214,7 +245,7 @@ spacer(int timems, bool spin )
     // sleep for that amount of time
     int ret = nanosleep( &tspec, NULL);
     if (ret != 0) {
-      fprintf(stderr, "nanosleep interrupted\n" );
+      fprintf(stderr, "[%d] nanosleep interrupted\n", thispid );
     }
 
   } else {

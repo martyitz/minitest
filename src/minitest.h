@@ -2,14 +2,20 @@
 //	and the backends providing the computations, and/or GPU offloading
 //  It also defines various timing routines
 
+#include <sys/types.h>
+#include <unistd.h>
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cerrno>
 #include <cmath>
 #include <time.h>
 
 extern size_t nn;
 extern int omp_num_t;
+extern pid_t thispid;
+extern int mpi_rank;
 
 extern double **lptr;
 extern double **rptr;

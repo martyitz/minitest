@@ -24,21 +24,19 @@ run: runa
 runa: $(TARGET)
 	runrun $(TARGET) run1
 
-hpct: hpcta hpctb
+hpct: hpcta hpctb hpctpost
 
 hpcta: $(TARGET)
-	runhpct $(TARGET) "-e CPUTIME -t" hpct1.c
+	runhpct $(TARGET) "-e CPUTIME -t" hpcta.c
 
 hpctb: $(TARGET)
-	runhpct $(TARGET) "-e cycles -t" hpct2.c
+	runhpct $(TARGET) "-e cycles -t" hpctb.c
 
-hpcpost: $(TARGET)
+hpctpost: $(TARGET)
 	export RUN_POST_REPT=1; runhpct "$(TARGET) -N 100000 -I 1" "-e CPUTIME -t" hpcpost
 
 hpctmpi: $(MPITARGET)
-	mpirun -N 2 hpcrun -e CPUTIME -t $(MPITARGET)
-	hpcstruct hpctoolkit*$(MPITARGET)*measurements
-	hpcprof hpctoolkit*$(MPITARGET)*measurements
+	export RUN_POST_REPT=1; runmpihpc "-N 2" "$(MPITARGET)  -N 100000 -I 1" "-e CPUTIME -t" hpcmpi
 
 include ../../maketargets/generic.targets
 include ../../maketargets/mpi.targets

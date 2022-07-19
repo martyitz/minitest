@@ -1,9 +1,9 @@
 #!/bin/sh
 
 #------------------------------------------------------------
-# runhpct:
+# runhmpipct:
 #
-#  a script that will invoke hpcrun to collect a measurements
+#  a script that will invoke mpirun on hpcrun to collect a measurements
 #  directory, process it with hpcstruct, and then process
 #  it with hpcprof to produce a database directory.
 #------------------------------------------------------------
@@ -17,21 +17,23 @@ usage()
 	    cat <<EOF 1>&2
 
 Usage:
-  runhpct [-n] <"target-app args"> <"hpcrun args"> <name> [<"hpcstruct args">]
+  runmpihpct [-n] <"MPI Args"> <"target-app args"> <"hpcrun args"> <name> [<"hpcstruct args">]
 
   [-n] means show what would be run, but don't run it
 
-  Arg 1: the target application name, and any arguments it needs
+  Arg 1: the arguments to be passed to mpirun
+
+  Arg 2: the target application name, and any arguments it needs
     If the target-app needs arguments Arg 1 should be a quoted string
 
-  Arg2: The hpcrun arguments inside a quoted string
+  Arg 3: The hpcrun arguments inside a quoted string
 
-  Arg3: A string to be used in constructing file and directory names:
+  Arg 4: A string to be used in constructing file and directory names:
     meas.<name>/
     dbase.<name>/
     log.<name>
 
-  Arg4: If needed, extra hpcstruct arguments
+  Arg5: If needed, extra hpcstruct arguments
 EOF
     exit 1
 }
@@ -48,29 +50,36 @@ else
         norun=no
 fi
 
-# $1 the target and its arguments
+# after the shift past a possible -n
+# $1 the arguments to be passed to mpirun
 if [ "$1" == "" ]; then
 	usage
 else
-	targargs=./$1
-
+	mpiargs=$1
 fi
 
-# $2 the hpcrun arguments to be used
+# $2 the target and its arguments
 if [ "$2" == "" ]; then
 	usage
 else
-	runargs=$2
+	targargs=./$2
 fi
 
-# $3 the name to be used for directories and files
+# $2 the hpcrun arguments to be used
 if [ "$3" == "" ]; then
 	usage
 else
-	name=$3
+	runargs=$3
 fi
 
-# $4 [optional] the hpcstruct arguments to be used
+# $4 the name to be used for directories and files
+if [ "$4" == "" ]; then
+	usage
+else
+	name=$4
+fi
+
+# $5 [optional] the hpcstruct arguments to be used
 
 #------------------------------------------------------------
 # Now the actual commands
@@ -94,11 +103,11 @@ else
 	echo "     GPU profiling is requested; gpubins-used should be non-zero"  |  tee -a log.$name
 fi
 
-echo "Launching /usr/bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1"
+echo "Launching /usr/bin/time mpirun $mpiargs hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1"
 echo ""
-echo "Launching /usr/bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1" >>log.$name
+echo "Launching /usr/bin/time mpirun $mpiargs hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1" >>log.$name
 echo "" >>log.$name
-/usr/bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1
+/usr/bin/time mpirun $mpiargs hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1
 grep avgtext log.$name
 echo " " >> log.$name
 
@@ -150,9 +159,9 @@ fi
 echo "" >> log.$name
 echo "=================================================================" >> log.$name
 echo "" >> log.$name
-# echo "Launching /usr/bin/time -p hpcstruct $4 meas.$name  >>log.$name 2>&1"
-echo "Launching /usr/bin/time -p hpcstruct $4 meas.$name  >>log.$name 2>&1" >> log.$name
-/usr/bin/time -p hpcstruct $4 meas.$name  >>log.$name 2>&1
+# echo "Launching /usr/bin/time -p hpcstruct $5 meas.$name  >>log.$name 2>&1"
+echo "Launching /usr/bin/time -p hpcstruct $5 meas.$name  >>log.$name 2>&1" >> log.$name
+/usr/bin/time -p hpcstruct $5 meas.$name  >>log.$name 2>&1
 
 if [ -d meas.${name}/gpubins-used ]; then
 	GPUBINSUSED=`ls meas.${name}/gpubins-used | wc -l`
