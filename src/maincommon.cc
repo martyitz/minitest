@@ -23,7 +23,6 @@ void
 setup_run(int argcc, char **argvv)
 {
   int		i, j, num;
-  int		ii;
   char	*p;
 
   if (argcc >=2)  /* run testcode with options */ {
@@ -79,8 +78,8 @@ setup_run(int argcc, char **argvv)
   }
 #endif
   thispid = getpid();
-  int ret;
-  if (gethostname (hostname, 1024) != 0 ) {
+  int ret = gethostname (hostname, 1024);
+  if ( ret != 0 ) {
     fprintf(stderr, "gethostname failed: %d, err = %s\n", ret, strerror(errno) ); 
     exit(-1);
   }

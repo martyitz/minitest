@@ -25,6 +25,7 @@ twork( int iter, int threadnum)
   {
     #pragma omp distribute parallel for
     for (size_t i = 0; i < nn; ++i) {
+      size_t nelements = nn;
 
 #include "compute.h"
 
