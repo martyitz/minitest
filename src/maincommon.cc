@@ -100,6 +100,13 @@ setup_run(int argcc, char **argvv)
     fprintf(stderr, "    [%d] Running of post-report disabled\n", thispid );
     run_post_rept = false;
   }
+
+  // Measure the overhead of real-time accounting
+  hrtime_t starttime = gethrtime();
+  hrtime_t endtime = gethrtime();
+  double  tempus =  (double) (endtime - starttime) / (double)1000000000.;
+  fprintf(stderr, "    [%d] overhead of real-time delta measurement: %13.9f s.\n\n",
+    thispid, tempus);
 }
 
 static void
@@ -304,6 +311,7 @@ gethrtime(void)
     return rc;
 }
 
+#if 0
 static	char	*prhrdelta(hrtime_t);
 static	char	*prhrvdelta(hrtime_t);
 
@@ -335,9 +343,9 @@ whrvlog(hrtime_t delta, hrtime_t vdelta, char *event, char *string)
 
 /*	prhrdelta (hrtime_t delta)
  *		returns a pointer to a static string in the form:
- *		sec.micros
- *		  1.123456
- *		0123456789
+ *		sec.nanosecs
+ *		  1.123456789
+ *		0123456789012
  *
  *	prhrvdelta is the same, but uses a different static buffer
  */
@@ -350,7 +358,7 @@ prhrdelta(hrtime_t delta)
 
 	/* convert to seconds */
 	tempus = ( (double) delta) / (double)1000000000.;
-	sprintf(cvdbuf, "%10.6f", tempus);
+	sprintf(cvdbuf, "%13.9f", tempus);
 	return(cvdbuf);
 }
 
@@ -362,8 +370,8 @@ prhrvdelta(hrtime_t delta)
 
 	/* convert to seconds */
 	tempus = ( (double) delta) / (double)1000000000.;
-	sprintf(cvdbuf, "%10.6f", tempus);
+	sprintf(cvdbuf, "%13.9f", tempus);
 	return(cvdbuf);
 }
 
-
+#endif

@@ -15,6 +15,7 @@ twork( int iter, int threadnum)
   fprintf(stderr, "[%d] Iteration %3d,   d_l1[%d] = 0x%016llx;   d_r1[%d] = 0x%016llx;   d_p1[%d] = 0x%016llx\n",
     thispid, iter, threadnum, d_l1, threadnum, d_r1, threadnum, d_p1 );
 #endif
+  hrtime_t starttime = gethrtime();
 
   // int threadsPerBlock = 256;
   // int  blocksPerGrid = ( nn + threadsPerBlock -1 ) / threadsPerBlock;
@@ -31,6 +32,13 @@ twork( int iter, int threadnum)
 
     }
   }
+
+  hrtime_t endtime = gethrtime();
+  double  tempus =  (double) (endtime - starttime) / (double)1000000000.;
+#if 1
+  fprintf(stderr, "    [%d] Completed iteration %d, thread %d in %13.9f s.\n\n",
+    thispid, iter, threadnum, tempus);
+#endif
   spacer (50, true);
 }
 

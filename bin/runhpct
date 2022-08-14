@@ -165,7 +165,7 @@ echo "  Experiment gpubins-used: $GPUBINSUSED" | tee -a log.$name
 
 if [  "$usesgpu" != "" ]; then
 	if [ "$GPUTHREADS" == "0" ]; then
-		echo "ERROR: expected gpubins-used is 0; should be non-zero"  >> log.$name
+		echo "ERROR: no Target GPU threads found, but GPU data is expected"  >> log.$name
 	fi
 fi
 

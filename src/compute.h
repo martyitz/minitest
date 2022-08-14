@@ -1,4 +1,4 @@
-//  This file is included as the core of the computations on the GPU or CPU
+//  This file is #include'd as the core of the computations on the GPU or CPU
 
 #if 0
     // do nothing at all
@@ -27,7 +27,9 @@
 
 #if 1
     // do a vector add in the kernel
-#define kkmax 200
+#ifndef kkmax
+#define kkmax 20
+#endif
     for (int kk = 0 ; kk < kkmax ; kk++ ) {
       d_p1[i] = d_p1[i] + d_l1[nelements - kk] / double(kkmax) + d_r1[kk] / double(kkmax);
     }

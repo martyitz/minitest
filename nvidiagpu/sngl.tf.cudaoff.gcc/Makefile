@@ -34,7 +34,7 @@ $(MPITARGET): singlempi.o cudagpu.o
 	@echo ""
 
 hpctpost: $(TARGET)
-	export RUN_POST_REPT=1; runhpct "$(TARGET) -N 100000 -I 1" "-e CPUTIME -e gpu=nvidia -t" hpctpost.cg
+	export RUN_POST_REPT=1; runhpct "$(TARGET) -I 10" "-e CPUTIME -e gpu=nvidia -t" hpctpost.cg
 
 hpctmpi: $(MPITARGET)
 	runmpihpc "-N 2" "$(MPITARGET)  -N 100000 -I 1" "-e CPUTIME -e gpu=nvidia -t" hpcmpi.cg

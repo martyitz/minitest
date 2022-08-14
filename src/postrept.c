@@ -17,7 +17,7 @@ main(int argc, char** argv, char** envp)
     count++;
   }
 
-  fprintf( stderr, "\n   postrpt completed -- performed %lld while-loop iterations\n\n", count);
+  fprintf( stderr, "\n   postrept completed -- performed %lld while-loop iterations\n\n", count);
 
   return 0;
 }

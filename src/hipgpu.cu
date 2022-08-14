@@ -25,6 +25,8 @@ twork( int iter, int threadnum)
 
   hipError_t err = hipSuccess;
 
+  hrtime_t starttime = gethrtime();
+
   //allocate device memory for copying in l1 and r1, copying out p1
   size_t size = nn * sizeof(double);
   double *d_l1 = NULL;
@@ -145,8 +147,12 @@ twork( int iter, int threadnum)
     fprintf(stderr, "[%d] Freed device vector d_p1\n", thispid );
 #endif
   }
-#if 0
-  fprintf(stderr, "    [%d] Completed iteration %d, thread %d\n\n", thispid, iter, threadnum);
+
+  hrtime_t endtime = gethrtime();
+  double  tempus =  (double) (endtime - starttime) / (double)1000000000.;
+#if 1
+  fprintf(stderr, "    [%d] Completed iteration %d, thread %d in %13.9f s.\n\n",
+    thispid, iter, threadnum, tempus);
 #endif
   spacer(50, true);
 }

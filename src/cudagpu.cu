@@ -21,6 +21,8 @@ xcompute(const double *d_l1, const double *d_r1, double *d_p1, int nelements )
 void
 twork( int iter, int threadnum)
 {
+  hrtime_t starttime = gethrtime();
+
   double *l1 = lptr[threadnum];
   double *r1 = rptr[threadnum];
   double *p1 = pptr[threadnum];
@@ -175,9 +177,12 @@ twork( int iter, int threadnum)
       thispid, threadnum, iter, d_p1 );
 #endif
   }
-#if 0
-  fprintf(stderr, "    [%d] Completed iteration %d, thread %d\n\n",
-    thispid, iter, threadnum);
+
+  hrtime_t endtime = gethrtime();
+  double  tempus =  (double) (endtime - starttime) / (double)1000000000.;
+#if 1
+  fprintf(stderr, "    [%d] Completed iteration %d, thread %d in %13.9f s.\n\n",
+    thispid, iter, threadnum, tempus);
 #endif
   spacer (50, true);
 }
