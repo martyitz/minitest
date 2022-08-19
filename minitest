@@ -72,37 +72,25 @@ export PATH=$PATH:$TOPDIR/bin
 
 go="f"
 
-if [ "$1" == "ll" ]; then
-	go="ll"
-fi
+case "$1" in
 
-if [ "$1" == "clean" ]; then
-	go="t"
-fi
+ll) go="ll" ;;
 
-if [ "$1" == "all" ]; then
-	go="t"
-fi
-if [ "$1" == "default" ]; then
-	go="t"
-fi
+clean) go="t" ;;
 
-if [ "$1" == "clobber" ]; then
-	go="t"
-fi
+all) go="t" ;;
 
-if [ "$1" == "run" ]; then
-	go="t"
-fi
+default) go="t" ;;
 
-#  Match any string beginning with hpct
-if [[ $1 == hpct* ]]; then
-	go="t"
-fi
+clobber) go="t" ;;
 
-if [ "$go" == "f" ]; then
-	usage
-fi
+run*) go="t" ;;
+
+hpct*) go="t" ;;
+
+*) usage ;;
+
+esac
 
 # remove any previous log of a run
 /bin/rm -f log.minitest
