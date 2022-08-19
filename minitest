@@ -95,7 +95,8 @@ if [ "$1" == "run" ]; then
 	go="t"
 fi
 
-if [ "$1" == "hpct" ]; then
+#  Match any string beginning with hpct
+if [[ $1 == hpct* ]]; then
 	go="t"
 fi
 
