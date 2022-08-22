@@ -1,5 +1,8 @@
 # Nvidia experiments without PC sampling with varying numbers of threads
 
+hpctnotrace: $(TARGET)
+	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia" hpctnotrace.cg
+
 hpct1: $(TARGET)
 	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct1.cg
 
@@ -31,6 +34,9 @@ hpct256: $(TARGET)
 	export OMP_NUM_THREADS=256; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia -t" hpct256.cg
 
 # Nvidia experiments with PC sampling with varying numbers of threads
+
+hpctpcnotrace: $(TARGET)
+	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc" hpctnotrace.cgp "--gpucfg yes"
 
 hpctpc1: $(TARGET)
 	export OMP_NUM_THREADS=1; runhpct $(TARGET) "-e CPUTIME -e gpu=nvidia,pc -t" hpct1.cgp "--gpucfg yes"
