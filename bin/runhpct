@@ -95,6 +95,13 @@ else
 	echo "     GPU profiling is requested; gpubins-used should be non-zero"  |  tee -a log.$name
 fi
 
+traces=`echo $runargs | grep " -t"`
+if [  "$traces" == "" ]; then
+	echo "     No tracing requested"  |  tee -a log.$name
+else
+	echo "     Tracing is requested"  |  tee -a log.$name
+fi
+
 echo "Launching /usr/bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1"
 echo ""
 echo "Launching /usr/bin/time hpcrun -o meas.$name $runargs $targargs >>log.$name 2>&1" >>log.$name
@@ -143,6 +150,20 @@ if [ -d meas.$name ]; then
 	GPUTHREADS=`ls meas.$name/$TARGET-*-[56789][0123456789][0123456789]-*.hpcrun 2>/dev/null | wc -l`
 	echo "  Experiment hpcrun files: $THREADS Total, Target CPU threads = $CPUTHREADS, Target GPU threads = $GPUTHREADS" | tee -a log.$name
 	ls -l meas.$name/*.hpcrun >> log.$name
+
+	if [  "$traces" != "" ]; then
+		CPUTRACES=`ls meas.$name/$TARGET-*-[01234][0123456789][0123456789]-*.hpctrace 2>/dev/null | wc -l`
+		GPUTRACES=`ls meas.$name/$TARGET-*-[56789][0123456789][0123456789]-*.hpctrace 2>/dev/null | wc -l`
+		echo "  Experiment hpctrace files: Target CPU traces = $CPUTRACES, Target GPU traces = $GPUTRACES" | tee -a log.$name
+		if [ "$CPUTHREADS" != "$CPUTRACES" ]; then
+			echo "ERROR -- CPU thread count and CPU trace count do not match" | tee -a log.$name
+		fi
+		if [ "$GPUTHREADS" != "$GPUTRACES" ]; then
+			echo "ERROR -- GPU thread count and GPU trace count do not match" | tee -a log.$name
+		fi
+		ls -l meas.$name/*.hpctrace >> log.$name
+	fi
+
 else
 	echo "ERROR: measurements directory does not exist" | tee -a log.$name
 	echo " "  | tee -a log.$name
@@ -165,7 +186,9 @@ echo "  Experiment gpubins-used: $GPUBINSUSED" | tee -a log.$name
 
 if [  "$usesgpu" != "" ]; then
 	if [ "$GPUTHREADS" == "0" ]; then
-		echo "ERROR: no Target GPU threads found, but GPU data is expected"  >> log.$name
+		if [ "$traces" != "" ]; then
+			echo "ERROR: no Target GPU threads found, but GPU traces are expected"  >> log.$name
+		fi
 	fi
 fi
 
